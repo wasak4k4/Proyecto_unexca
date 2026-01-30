@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sistema de Gestión Académica</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!-- HEADER -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1>Sistema de Gestión Académica</h1>
+        <span>Portal del Profesor</span>
+      </div>
+
+      <div class="topbar-actions">
+        <a href="migracion.html" class="btn-primary" style="text-decoration: none;">
+          <i class="ri-add-line"></i>
+          Nueva migración
+        </a>
+        
+        <!-- Notificaciones Dropdown -->
+        <div class="dropdown-container">
+          <button class="icon-btn" id="btnNotificaciones">
+            <i class="ri-notification-3-line"></i>
+            <span class="notification-badge">3</span>
+          </button>
+          <div class="dropdown-menu dropdown-notifications" id="dropdownNotificaciones">
+            <div class="dropdown-header">
+              <h4>Notificaciones</h4>
+              <span class="badge-count">3 nuevas</span>
+            </div>
+            <div class="dropdown-body">
+              <a href="#" class="notification-item unread">
+                <div class="notification-icon success">
+                  <i class="ri-check-line"></i>
+                </div>
+                <div class="notification-content">
+                  <p class="notification-text">Migración completada exitosamente</p>
+                  <span class="notification-time">Hace 5 minutos</span>
+                </div>
+              </a>
+              <a href="#" class="notification-item unread">
+                <div class="notification-icon warning">
+                  <i class="ri-error-warning-line"></i>
+                </div>
+                <div class="notification-content">
+                  <p class="notification-text">3 estudiantes requieren actualización de datos</p>
+                  <span class="notification-time">Hace 1 hora</span>
+                </div>
+              </a>
+              <a href="#" class="notification-item unread">
+                <div class="notification-icon info">
+                  <i class="ri-user-add-line"></i>
+                </div>
+                <div class="notification-content">
+                  <p class="notification-text">15 nuevos estudiantes registrados este semestre</p>
+                  <span class="notification-time">Hace 2 horas</span>
+                </div>
+              </a>
+              <a href="#" class="notification-item">
+                <div class="notification-icon">
+                  <i class="ri-calendar-line"></i>
+                </div>
+                <div class="notification-content">
+                  <p class="notification-text">Recordatorio: Cierre de notas en 5 días</p>
+                  <span class="notification-time">Ayer</span>
+                </div>
+              </a>
+            </div>
+            <div class="dropdown-footer">
+              <a href="#">Ver todas las notificaciones</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Usuario Dropdown -->
+        <div class="dropdown-container">
+          <button class="icon-btn" id="btnUsuario">
+            <i class="ri-user-3-line"></i>
+          </button>
+          <div class="dropdown-menu dropdown-user" id="dropdownUsuario">
+            <div class="user-header">
+              <div class="user-avatar">
+                <i class="ri-user-3-fill"></i>
+              </div>
+              <div class="user-info">
+                <h4>Dr. Roberto Sánchez</h4>
+                <span>profesor@universidad.edu</span>
+              </div>
+            </div>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item">
+              <i class="ri-user-line"></i>
+              Mi Perfil
+            </a>
+            <a href="configuracion.html" class="dropdown-item">
+              <i class="ri-settings-3-line"></i>
+              Configuración
+            </a>
+            <a href="#" class="dropdown-item">
+              <i class="ri-question-line"></i>
+              Ayuda
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="/logout" class="dropdown-item logout">
+              <i class="ri-logout-box-r-line"></i>
+              Cerrar Sesión
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="app">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <nav>
+          <a class="active">
+            <i class="ri-dashboard-line"></i>
+            Panel
+          </a>
+          <a href="base_de_datos.html">
+            <i class="ri-group-line"></i>
+            Estudiantes
+          </a>
+          <a href="migracion.html">
+            <i class="ri-database-2-line"></i>
+            Migración
+          </a>
+          <a href="configuracion.html">
+            <i class="ri-settings-3-line"></i>
+            Configuración
+          </a>
+        </nav>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="main">
+        <div class="page-title">
+          <h2>Panel de Gestión de Notas</h2>
+          <p>
+            Profesor: Dr. Roberto Sánchez | Departamento de Ciencias de la
+            Computación
+          </p>
+        </div>
+
+        <!-- METRICS -->
+        <div class="metrics">
+          <div class="card metric">
+            <div class="metric-content">
+              <span>Total Estudiantes</span>
+              <strong id="metricEstudiantes">--</strong>
+              <small class="success">Registrados</small>
+            </div>
+            <div class="metric-icon"><i class="ri-group-line"></i></div>
+          </div>
+
+          <div class="card metric">
+            <div class="metric-content">
+              <span>Migraciones</span>
+              <strong id="metricMigraciones">--</strong>
+              <small class="info">Realizadas</small>
+            </div>
+            <div class="metric-icon" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);"><i class="ri-upload-cloud-2-line"></i></div>
+          </div>
+
+          <div class="card metric">
+            <div class="metric-content">
+              <span>Por Migración</span>
+              <strong id="metricMigrados">--</strong>
+              <small class="success">Importados</small>
+            </div>
+            <div class="metric-icon" style="background: linear-gradient(135deg, #10b981, #34d399);"><i class="ri-file-upload-line"></i></div>
+          </div>
+
+          <div class="card metric">
+            <div class="metric-content">
+              <span>Promedio General</span>
+              <strong id="metricPromedio">--</strong>
+              <small class="warning">pts.</small>
+            </div>
+            <div class="metric-icon" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);"><i class="ri-bar-chart-2-line"></i></div>
+          </div>
+        </div>
+
+        <!-- GRAFICOS -->
+        <section class="charts-section">
+          <h3>
+            <i class="ri-bar-chart-box-line"></i>
+            Análisis Académico
+          </h3>
+
+          <div class="charts-grid">
+            <!-- Gráfico 1: Estudiantes por Carrera -->
+            <div class="card chart-card">
+              <div class="chart-header">
+                <h4>
+                  <i class="ri-pie-chart-2-line"></i>
+                  Estudiantes por Carrera
+                </h4>
+                <span class="chart-badge">Distribución</span>
+              </div>
+              <div class="chart-container">
+                <canvas id="chartCarreras"></canvas>
+              </div>
+            </div>
+
+            <!-- Gráfico 2: Promedio por Carrera -->
+            <div class="card chart-card">
+              <div class="chart-header">
+                <h4>
+                  <i class="ri-bar-chart-horizontal-line"></i>
+                  Promedio por Carrera
+                </h4>
+                <span class="chart-badge success">Rendimiento</span>
+              </div>
+              <div class="chart-container">
+                <canvas id="chartPromedio"></canvas>
+              </div>
+            </div>
+
+            <!-- Gráfico 3: Estudiantes por Semestre -->
+            <div class="card chart-card">
+              <div class="chart-header">
+                <h4>
+                  <i class="ri-line-chart-line"></i>
+                  Estudiantes por Semestre
+                </h4>
+                <span class="chart-badge info">Progreso</span>
+              </div>
+              <div class="chart-container">
+                <canvas id="chartSemestre"></canvas>
+              </div>
+            </div>
+
+            <!-- Gráfico 4: Distribución de Notas -->
+            <div class="card chart-card">
+              <div class="chart-header">
+                <h4>
+                  <i class="ri-numbers-line"></i>
+                  Distribución de Notas
+                </h4>
+                <span class="chart-badge warning">Evaluaciones</span>
+              </div>
+              <div class="chart-container">
+                <canvas id="chartNotas"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- CHART.JS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- GRAFICOS DINÁMICOS -->
+    <script>
+      // Configuración global de Chart.js
+      Chart.defaults.font.family = "'Inter', 'Segoe UI', system-ui, sans-serif";
+      Chart.defaults.font.size = 12;
+      Chart.defaults.color = '#64748b';
+
+      // Paleta de colores profesional
+      const chartColors = {
+        primary: '#4f46e5',
+        secondary: '#7c3aed',
+        success: '#10b981',
+        warning: '#f59e0b',
+        danger: '#ef4444',
+        info: '#3b82f6',
+        gradient: ['#4f46e5', '#7c3aed', '#a855f7', '#ec4899', '#f43f5e', '#10b981'],
+        pastel: ['#818cf8', '#a78bfa', '#c4b5fd', '#e879f9', '#f472b6', '#34d399']
+      };
+
+      // Variables para los gráficos
+      let chartInstances = {};
+
+      // Cargar datos del dashboard
+      async function cargarDashboard() {
+        try {
+          const response = await fetch('/api/estadisticas');
+          const data = await response.json();
+
+          // Actualizar métricas principales
+          document.getElementById('metricEstudiantes').textContent = data.total_estudiantes || 0;
+          document.getElementById('metricPromedio').textContent = data.promedio_general || '0.0';
+
+          // Cargar estadísticas de migración
+          try {
+            const migResponse = await fetch('/api/migracion/historial');
+            const migData = await migResponse.json();
+            const historial = migData.historial || [];
+            
+            document.getElementById('metricMigraciones').textContent = historial.length;
+            const totalMigrados = historial.reduce((sum, h) => sum + (h.exitosos || 0), 0);
+            document.getElementById('metricMigrados').textContent = totalMigrados;
+          } catch (e) {
+            document.getElementById('metricMigraciones').textContent = '0';
+            document.getElementById('metricMigrados').textContent = '0';
+          }
+
+          // Crear gráficos profesionales
+          crearGraficos(data);
+        } catch (error) {
+          console.error('Error al cargar dashboard:', error);
+        }
+      }
+
+      function crearGraficos(data) {
+        // 1. Estudiantes por Carrera (Doughnut elegante)
+        const carreras = data.estudiantes_por_carrera || [];
+        if (carreras.length > 0) {
+          chartInstances.carreras = new Chart(document.getElementById('chartCarreras'), {
+            type: 'doughnut',
+            data: {
+              labels: carreras.map(c => c.carrera.replace('Ingeniería ', '').replace('Ingenieria ', '')),
+              datasets: [{
+                data: carreras.map(c => c.cantidad),
+                backgroundColor: chartColors.gradient,
+                borderWidth: 0,
+                hoverOffset: 8
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: true,
+              cutout: '65%',
+              plugins: {
+                legend: {
+                  position: 'bottom',
+                  labels: {
+                    padding: 16,
+                    usePointStyle: true,
+                    pointStyle: 'circle',
+                    font: { size: 11, weight: '500' }
+                  }
+                }
+              }
+            }
+          });
+        }
+
+        // 2. Promedio por Carrera (Barras horizontales con gradiente)
+        const promedios = data.promedio_por_carrera || [];
+        if (promedios.length > 0) {
+          const ctx = document.getElementById('chartPromedio').getContext('2d');
+          const gradient = ctx.createLinearGradient(0, 0, 400, 0);
+          gradient.addColorStop(0, '#4f46e5');
+          gradient.addColorStop(1, '#7c3aed');
+
+          chartInstances.promedio = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: promedios.map(p => p.carrera.replace('Ingeniería ', '').replace('Ingenieria ', '')),
+              datasets: [{
+                label: 'Promedio',
+                data: promedios.map(p => p.promedio),
+                backgroundColor: gradient,
+                borderRadius: 6,
+                barThickness: 24
+              }]
+            },
+            options: {
+              indexAxis: 'y',
+              responsive: true,
+              maintainAspectRatio: true,
+              plugins: {
+                legend: { display: false }
+              },
+              scales: {
+                x: {
+                  beginAtZero: true,
+                  max: 20,
+                  grid: { color: 'rgba(0,0,0,0.05)' },
+                  ticks: { font: { weight: '500' } }
+                },
+                y: {
+                  grid: { display: false },
+                  ticks: { font: { weight: '500' } }
+                }
+              }
+            }
+          });
+        }
+
+        // 3. Estudiantes por Semestre (Gráfico de área suave)
+        const semestres = data.estudiantes_por_semestre || [];
+        if (semestres.length > 0) {
+          const ctx = document.getElementById('chartSemestre').getContext('2d');
+          const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+          gradient.addColorStop(0, 'rgba(79, 70, 229, 0.3)');
+          gradient.addColorStop(1, 'rgba(79, 70, 229, 0.02)');
+
+          chartInstances.semestre = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: semestres.map(s => `Sem ${s.semestre}`),
+              datasets: [{
+                label: 'Estudiantes',
+                data: semestres.map(s => s.cantidad),
+                borderColor: chartColors.primary,
+                backgroundColor: gradient,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: chartColors.primary,
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 5,
+                pointHoverRadius: 7
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: true,
+              plugins: {
+                legend: { display: false }
+              },
+              scales: {
+                x: {
+                  grid: { display: false },
+                  ticks: { font: { weight: '500' } }
+                },
+                y: {
+                  beginAtZero: true,
+                  grid: { color: 'rgba(0,0,0,0.05)' },
+                  ticks: { font: { weight: '500' } }
+                }
+              }
+            }
+          });
+        }
+
+        // 4. Distribución de Notas (Barras con colores por rango)
+        const notas = data.distribucion_notas || [];
+        if (notas.length > 0) {
+          const coloresNotas = ['#ef4444', '#f59e0b', '#3b82f6', '#10b981'];
+          
+          chartInstances.notas = new Chart(document.getElementById('chartNotas'), {
+            type: 'bar',
+            data: {
+              labels: notas.map(n => n.rango),
+              datasets: [{
+                label: 'Estudiantes',
+                data: notas.map(n => n.cantidad),
+                backgroundColor: coloresNotas,
+                borderRadius: 8,
+                barThickness: 40
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: true,
+              plugins: {
+                legend: { display: false }
+              },
+              scales: {
+                x: {
+                  grid: { display: false },
+                  ticks: { font: { weight: '600' } }
+                },
+                y: {
+                  beginAtZero: true,
+                  grid: { color: 'rgba(0,0,0,0.05)' },
+                  ticks: { font: { weight: '500' } }
+                }
+              }
+            }
+          });
+        }
+      }
+
+      // Cargar al iniciar
+      window.addEventListener('DOMContentLoaded', cargarDashboard);
+    </script>
+
+    <!-- DARK MODE SCRIPT -->
+    <script>
+      // Aplicar modo oscuro si está guardado en localStorage
+      if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+      }
+    </script>
+
+    <!-- DROPDOWN SCRIPT -->
+    <script>
+      const btnNotificaciones = document.getElementById('btnNotificaciones');
+      const dropdownNotificaciones = document.getElementById('dropdownNotificaciones');
+      const btnUsuario = document.getElementById('btnUsuario');
+      const dropdownUsuario = document.getElementById('dropdownUsuario');
+
+      // Toggle dropdown notificaciones
+      btnNotificaciones.addEventListener('click', function(e) {
+        e.stopPropagation();
+        dropdownNotificaciones.classList.toggle('show');
+        dropdownUsuario.classList.remove('show');
+      });
+
+      // Toggle dropdown usuario
+      btnUsuario.addEventListener('click', function(e) {
+        e.stopPropagation();
+        dropdownUsuario.classList.toggle('show');
+        dropdownNotificaciones.classList.remove('show');
+      });
+
+      // Cerrar dropdowns al hacer clic fuera
+      document.addEventListener('click', function(e) {
+        if (!dropdownNotificaciones.contains(e.target) && e.target !== btnNotificaciones) {
+          dropdownNotificaciones.classList.remove('show');
+        }
+        if (!dropdownUsuario.contains(e.target) && e.target !== btnUsuario) {
+          dropdownUsuario.classList.remove('show');
+        }
+      });
+
+      // Prevenir cierre al hacer clic dentro del dropdown
+      dropdownNotificaciones.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+      dropdownUsuario.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+    </script>
+  </body>
+</html>

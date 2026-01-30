@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Configuración | Sistema de Gestión Académica</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles_config.css" />
+  </head>
+
+  <body>
+    <!-- HEADER -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1>Sistema de Gestión Académica</h1>
+        <span>Portal del Profesor</span>
+      </div>
+
+      <div class="topbar-actions">
+        <!-- Notificaciones Dropdown -->
+        <div class="dropdown-container">
+          <button class="icon-btn" id="btnNotificaciones">
+            <i class="ri-notification-3-line"></i>
+            <span class="notification-badge">3</span>
+          </button>
+          <div class="dropdown-menu dropdown-notifications" id="dropdownNotificaciones">
+            <div class="dropdown-header">
+              <h4>Notificaciones</h4>
+              <span class="badge-count">3 nuevas</span>
+            </div>
+            <div class="dropdown-body">
+              <a href="#" class="notification-item unread">
+                <div class="notification-icon success">
+                  <i class="ri-check-line"></i>
+                </div>
+                <div class="notification-content">
+                  <p class="notification-text">Migración completada exitosamente</p>
+                  <span class="notification-time">Hace 5 minutos</span>
+                </div>
+              </a>
+              <a href="#" class="notification-item unread">
+                <div class="notification-icon warning">
+                  <i class="ri-error-warning-line"></i>
+                </div>
+                <div class="notification-content">
+                  <p class="notification-text">3 estudiantes requieren actualización de datos</p>
+                  <span class="notification-time">Hace 1 hora</span>
+                </div>
+              </a>
+              <a href="#" class="notification-item unread">
+                <div class="notification-icon info">
+                  <i class="ri-user-add-line"></i>
+                </div>
+                <div class="notification-content">
+                  <p class="notification-text">15 nuevos estudiantes registrados este semestre</p>
+                  <span class="notification-time">Hace 2 horas</span>
+                </div>
+              </a>
+              <a href="#" class="notification-item">
+                <div class="notification-icon">
+                  <i class="ri-calendar-line"></i>
+                </div>
+                <div class="notification-content">
+                  <p class="notification-text">Recordatorio: Cierre de notas en 5 días</p>
+                  <span class="notification-time">Ayer</span>
+                </div>
+              </a>
+            </div>
+            <div class="dropdown-footer">
+              <a href="#">Ver todas las notificaciones</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Usuario Dropdown -->
+        <div class="dropdown-container">
+          <button class="icon-btn" id="btnUsuario">
+            <i class="ri-user-3-line"></i>
+          </button>
+          <div class="dropdown-menu dropdown-user" id="dropdownUsuario">
+            <div class="user-header">
+              <div class="user-avatar">
+                <i class="ri-user-3-fill"></i>
+              </div>
+              <div class="user-info">
+                <h4>Dr. Roberto Sánchez</h4>
+                <span>profesor@universidad.edu</span>
+              </div>
+            </div>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item">
+              <i class="ri-user-line"></i>
+              Mi Perfil
+            </a>
+            <a href="configuracion.html" class="dropdown-item">
+              <i class="ri-settings-3-line"></i>
+              Configuración
+            </a>
+            <a href="#" class="dropdown-item">
+              <i class="ri-question-line"></i>
+              Ayuda
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="/logout" class="dropdown-item logout">
+              <i class="ri-logout-box-r-line"></i>
+              Cerrar Sesión
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- APP -->
+    <div class="app">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <nav>
+          <a href="index.html">
+            <i class="ri-dashboard-line"></i>
+            Panel
+          </a>
+
+          <a href="base_de_datos.html">
+            <i class="ri-group-line"></i>
+            Estudiantes
+          </a>
+
+          <a href="migracion.html">
+            <i class="ri-database-2-line"></i>
+            Migración
+          </a>
+
+          <a class="active">
+            <i class="ri-settings-3-line"></i>
+            Configuración
+          </a>
+        </nav>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="main">
+        <div class="page-title">
+          <h2>Configuración</h2>
+          <p>Administra tu cuenta y preferencias del sistema</p>
+        </div>
+
+        <div class="config-grid">
+          <!-- Información del Usuario -->
+          <section class="config-card">
+            <div class="config-header">
+              <div class="config-icon">
+                <i class="ri-user-3-line"></i>
+              </div>
+              <div>
+                <h3>Información del Usuario</h3>
+                <p>Actualiza tu nombre y datos personales</p>
+              </div>
+            </div>
+            <form class="config-form" id="formUsuario">
+              <div class="form-group">
+                <label for="nombre">Nombre completo</label>
+                <input type="text" id="nombre" placeholder="Dr. Roberto Sánchez" value="Dr. Roberto Sánchez" />
+              </div>
+              <div class="form-group">
+                <label for="departamento">Departamento</label>
+                <input type="text" id="departamento" placeholder="Departamento de Ciencias" value="Departamento de Ciencias de la Computación" />
+              </div>
+              <button type="submit" class="btn-save">
+                <i class="ri-save-line"></i>
+                Guardar cambios
+              </button>
+            </form>
+          </section>
+
+          <!-- Correo Electrónico -->
+          <section class="config-card">
+            <div class="config-header">
+              <div class="config-icon">
+                <i class="ri-mail-line"></i>
+              </div>
+              <div>
+                <h3>Correo Electrónico</h3>
+                <p>Cambia tu correo de acceso</p>
+              </div>
+            </div>
+            <form class="config-form" id="formCorreo">
+              <div class="form-group">
+                <label for="correoActual">Correo actual</label>
+                <input type="email" id="correoActual" placeholder="profesor@universidad.edu" value="profesor@universidad.edu" readonly />
+              </div>
+              <div class="form-group">
+                <label for="correoNuevo">Nuevo correo</label>
+                <input type="email" id="correoNuevo" placeholder="nuevo.correo@universidad.edu" />
+              </div>
+              <button type="submit" class="btn-save">
+                <i class="ri-save-line"></i>
+                Actualizar correo
+              </button>
+            </form>
+          </section>
+
+          <!-- Contraseña -->
+          <section class="config-card">
+            <div class="config-header">
+              <div class="config-icon">
+                <i class="ri-lock-2-line"></i>
+              </div>
+              <div>
+                <h3>Contraseña</h3>
+                <p>Cambia tu contraseña de acceso</p>
+              </div>
+            </div>
+            <form class="config-form" id="formPassword">
+              <div class="form-group">
+                <label for="passwordActual">Contraseña actual</label>
+                <input type="password" id="passwordActual" placeholder="••••••••" />
+              </div>
+              <div class="form-group">
+                <label for="passwordNuevo">Nueva contraseña</label>
+                <input type="password" id="passwordNuevo" placeholder="••••••••" />
+              </div>
+              <div class="form-group">
+                <label for="passwordConfirmar">Confirmar contraseña</label>
+                <input type="password" id="passwordConfirmar" placeholder="••••••••" />
+              </div>
+              <button type="submit" class="btn-save">
+                <i class="ri-save-line"></i>
+                Cambiar contraseña
+              </button>
+            </form>
+          </section>
+
+          <!-- Modo Oscuro -->
+          <section class="config-card">
+            <div class="config-header">
+              <div class="config-icon">
+                <i class="ri-moon-line"></i>
+              </div>
+              <div>
+                <h3>Apariencia</h3>
+                <p>Personaliza el tema de la interfaz</p>
+              </div>
+            </div>
+            <div class="config-form">
+              <div class="toggle-group">
+                <div class="toggle-info">
+                  <span class="toggle-label">Modo Oscuro</span>
+                  <span class="toggle-description">Activa el tema oscuro para reducir la fatiga visual</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="darkModeToggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <!-- JS -->
+    <script>
+      // ---------- DARK MODE ----------
+      const darkModeToggle = document.getElementById('darkModeToggle');
+      
+      // Cargar estado guardado
+      const isDarkMode = localStorage.getItem('darkMode') === 'true';
+      darkModeToggle.checked = isDarkMode;
+      if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+      }
+      
+      // Manejar cambio de toggle
+      darkModeToggle.addEventListener('change', function() {
+        if (this.checked) {
+          document.body.classList.add('dark-mode');
+          localStorage.setItem('darkMode', 'true');
+        } else {
+          document.body.classList.remove('dark-mode');
+          localStorage.setItem('darkMode', 'false');
+        }
+      });
+
+      // ---------- FORMULARIOS ----------
+      document.getElementById('formUsuario').addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Información del usuario actualizada correctamente');
+      });
+
+      document.getElementById('formCorreo').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const nuevoCorreo = document.getElementById('correoNuevo').value;
+        if (nuevoCorreo) {
+          alert('Correo actualizado a: ' + nuevoCorreo);
+        } else {
+          alert('Por favor ingresa un nuevo correo');
+        }
+      });
+
+      document.getElementById('formPassword').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const nuevo = document.getElementById('passwordNuevo').value;
+        const confirmar = document.getElementById('passwordConfirmar').value;
+        
+        if (!nuevo || !confirmar) {
+          alert('Por favor completa todos los campos');
+          return;
+        }
+        
+        if (nuevo !== confirmar) {
+          alert('Las contraseñas no coinciden');
+          return;
+        }
+        
+        alert('Contraseña actualizada correctamente');
+        document.getElementById('formPassword').reset();
+      });
+
+      // ---------- DROPDOWN SCRIPT ----------
+      const btnNotificaciones = document.getElementById('btnNotificaciones');
+      const dropdownNotificaciones = document.getElementById('dropdownNotificaciones');
+      const btnUsuario = document.getElementById('btnUsuario');
+      const dropdownUsuario = document.getElementById('dropdownUsuario');
+
+      // Toggle dropdown notificaciones
+      btnNotificaciones.addEventListener('click', function(e) {
+        e.stopPropagation();
+        dropdownNotificaciones.classList.toggle('show');
+        dropdownUsuario.classList.remove('show');
+      });
+
+      // Toggle dropdown usuario
+      btnUsuario.addEventListener('click', function(e) {
+        e.stopPropagation();
+        dropdownUsuario.classList.toggle('show');
+        dropdownNotificaciones.classList.remove('show');
+      });
+
+      // Cerrar dropdowns al hacer clic fuera
+      document.addEventListener('click', function(e) {
+        if (!dropdownNotificaciones.contains(e.target) && e.target !== btnNotificaciones) {
+          dropdownNotificaciones.classList.remove('show');
+        }
+        if (!dropdownUsuario.contains(e.target) && e.target !== btnUsuario) {
+          dropdownUsuario.classList.remove('show');
+        }
+      });
+
+      // Prevenir cierre al hacer clic dentro del dropdown
+      dropdownNotificaciones.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+      dropdownUsuario.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+    </script>
+  </body>
+</html>

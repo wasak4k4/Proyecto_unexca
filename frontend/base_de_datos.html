@@ -1,0 +1,1065 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Base de Datos Estudiantes | Sistema Académico</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!-- HEADER -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1>Sistema de Gestión Académica</h1>
+        <span>Portal del Profesor</span>
+      </div>
+
+      <div class="topbar-actions">
+        <button class="btn-primary" id="btnNuevoEstudiante">
+          <i class="ri-add-line"></i>
+          Nuevo estudiante
+        </button>
+
+        <!-- Notificaciones Dropdown -->
+        <div class="dropdown-container">
+          <button class="icon-btn" id="btnNotificaciones">
+            <i class="ri-notification-3-line"></i>
+            <span class="notification-badge">3</span>
+          </button>
+          <div class="dropdown-menu dropdown-notifications" id="dropdownNotificaciones">
+            <div class="dropdown-header">
+              <h4>Notificaciones</h4>
+              <span class="badge-count">3 nuevas</span>
+            </div>
+            <div class="dropdown-body">
+              <a href="#" class="notification-item unread">
+                <div class="notification-icon success">
+                  <i class="ri-check-line"></i>
+                </div>
+                <div class="notification-content">
+                  <p class="notification-text">Migración completada exitosamente</p>
+                  <span class="notification-time">Hace 5 minutos</span>
+                </div>
+              </a>
+              <a href="#" class="notification-item unread">
+                <div class="notification-icon warning">
+                  <i class="ri-error-warning-line"></i>
+                </div>
+                <div class="notification-content">
+                  <p class="notification-text">3 estudiantes requieren actualización de datos</p>
+                  <span class="notification-time">Hace 1 hora</span>
+                </div>
+              </a>
+              <a href="#" class="notification-item unread">
+                <div class="notification-icon info">
+                  <i class="ri-user-add-line"></i>
+                </div>
+                <div class="notification-content">
+                  <p class="notification-text">15 nuevos estudiantes registrados este semestre</p>
+                  <span class="notification-time">Hace 2 horas</span>
+                </div>
+              </a>
+              <a href="#" class="notification-item">
+                <div class="notification-icon">
+                  <i class="ri-calendar-line"></i>
+                </div>
+                <div class="notification-content">
+                  <p class="notification-text">Recordatorio: Cierre de notas en 5 días</p>
+                  <span class="notification-time">Ayer</span>
+                </div>
+              </a>
+            </div>
+            <div class="dropdown-footer">
+              <a href="#">Ver todas las notificaciones</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Usuario Dropdown -->
+        <div class="dropdown-container">
+          <button class="icon-btn" id="btnUsuario">
+            <i class="ri-user-3-line"></i>
+          </button>
+          <div class="dropdown-menu dropdown-user" id="dropdownUsuario">
+            <div class="user-header">
+              <div class="user-avatar">
+                <i class="ri-user-3-fill"></i>
+              </div>
+              <div class="user-info">
+                <h4>Dr. Roberto Sánchez</h4>
+                <span>profesor@universidad.edu</span>
+              </div>
+            </div>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item">
+              <i class="ri-user-line"></i>
+              Mi Perfil
+            </a>
+            <a href="configuracion.html" class="dropdown-item">
+              <i class="ri-settings-3-line"></i>
+              Configuración
+            </a>
+            <a href="#" class="dropdown-item">
+              <i class="ri-question-line"></i>
+              Ayuda
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="/logout" class="dropdown-item logout">
+              <i class="ri-logout-box-r-line"></i>
+              Cerrar Sesión
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- APP -->
+    <div class="app">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <nav>
+          <a href="index.html">
+            <i class="ri-dashboard-line"></i>
+            Panel
+          </a>
+
+          <a class="active">
+            <i class="ri-group-line"></i>
+            Estudiantes
+          </a>
+
+          <a href="migracion.html">
+            <i class="ri-database-2-line"></i>
+            Migración
+          </a>
+
+          <a href="configuracion.html">
+            <i class="ri-settings-3-line"></i>
+            Configuración
+          </a>
+        </nav>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="main">
+        <div class="page-title">
+          <h2>Base de Datos de Estudiantes</h2>
+          <p>Listado académico detallado</p>
+        </div>
+
+        <section class="students-section">
+          <!-- Table Header with Search and Filters -->
+          <div class="table-header">
+            <div class="table-title">
+              <i class="ri-group-line"></i>
+              <div>
+                <h3>Lista de Estudiantes</h3>
+                <p id="tableCount">Cargando...</p>
+              </div>
+            </div>
+            <div class="table-actions">
+              <div class="search-box">
+                <i class="ri-search-line"></i>
+                <input type="text" id="searchInput" placeholder="Buscar estudiante...">
+              </div>
+              <div class="filter-buttons">
+                <select id="filterCarrera" class="filter-select">
+                  <option value="">Todas las carreras</option>
+                </select>
+                <select id="filterSemestre" class="filter-select">
+                  <option value="">Todos los semestres</option>
+                  <option value="1">Semestre 1</option>
+                  <option value="2">Semestre 2</option>
+                  <option value="3">Semestre 3</option>
+                  <option value="4">Semestre 4</option>
+                  <option value="5">Semestre 5</option>
+                  <option value="6">Semestre 6</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table Card -->
+          <div class="card table-card">
+            <table class="students-table enhanced-table">
+              <thead>
+                <tr>
+                  <th class="col-id">#</th>
+                  <th class="col-name">
+                    <i class="ri-user-line"></i>
+                    Estudiante
+                  </th>
+                  <th class="col-contact">
+                    <i class="ri-mail-line"></i>
+                    Contacto
+                  </th>
+                  <th class="col-career">
+                    <i class="ri-graduation-cap-line"></i>
+                    Carrera
+                  </th>
+                  <th class="col-semester">
+                    <i class="ri-calendar-line"></i>
+                    Semestre
+                  </th>
+                  <th class="col-actions">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tablaEstudiantes">
+                <!-- Los datos se cargarán dinámicamente -->
+              </tbody>
+            </table>
+            
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state" style="display: none;">
+              <i class="ri-user-search-line"></i>
+              <h4>No se encontraron estudiantes</h4>
+              <p>Intenta cambiar los filtros o agrega un nuevo estudiante</p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- MODAL NUEVO ESTUDIANTE -->
+    <div class="modal-overlay" id="modalEstudiante">
+      <div class="modal modal-nuevo-estudiante">
+        <div class="modal-header-fancy">
+          <div class="modal-header-icon">
+            <i class="ri-user-add-line"></i>
+          </div>
+          <div class="modal-header-text">
+            <h3>Nuevo Estudiante</h3>
+            <p>Completa los datos para registrar un nuevo estudiante</p>
+          </div>
+          <button class="close-btn-fancy" id="closeModal">
+            <i class="ri-close-line"></i>
+          </button>
+        </div>
+
+        <form class="modal-form-fancy" action="/estudiantes/registrar" method="POST">
+          <!-- Información Personal -->
+          <div class="form-section">
+            <h4 class="form-section-title">
+              <i class="ri-user-line"></i>
+              Información Personal
+            </h4>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="inputNombre">Nombre</label>
+                <div class="input-with-icon">
+                  <i class="ri-user-3-line"></i>
+                  <input type="text" id="inputNombre" name="nombre" placeholder="Ej: Juan Carlos" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputApellido">Apellido</label>
+                <div class="input-with-icon">
+                  <i class="ri-user-3-line"></i>
+                  <input type="text" id="inputApellido" name="apellido" placeholder="Ej: García López" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputFechaNacimiento">Fecha de Nacimiento</label>
+                <div class="input-with-icon">
+                  <i class="ri-calendar-line"></i>
+                  <input type="date" id="inputFechaNacimiento" name="fecha_nacimiento" required>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Información de Contacto -->
+          <div class="form-section">
+            <h4 class="form-section-title">
+              <i class="ri-contacts-line"></i>
+              Información de Contacto
+            </h4>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="inputTelefono">Teléfono</label>
+                <div class="input-with-icon">
+                  <i class="ri-phone-line"></i>
+                  <input type="tel" id="inputTelefono" name="telefono" placeholder="Ej: +58 424 1234567" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputCorreo">Correo Electrónico</label>
+                <div class="input-with-icon">
+                  <i class="ri-mail-line"></i>
+                  <input type="email" id="inputCorreo" name="correo" placeholder="Ej: estudiante@gmail.com" required>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Información Académica -->
+          <div class="form-section">
+            <h4 class="form-section-title">
+              <i class="ri-graduation-cap-line"></i>
+              Información Académica
+            </h4>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="inputCarrera">Carrera</label>
+                <div class="select-with-icon">
+                  <i class="ri-book-open-line"></i>
+                  <select id="inputCarrera" name="carrera" required>
+                    <option value="" disabled selected>Selecciona una carrera</option>
+                    <option value="Ingenieria Informatica">Ingenieria Informatica</option>
+                    <option value="Ingenieria de Sistemas">Ingenieria de Sistemas</option>
+                    <option value="Ingenieria Industrial">Ingenieria Industrial</option>
+                    <option value="Ingenieria Civil">Ingenieria Civil</option>
+                    <option value="Ingenieria Mecanica">Ingenieria Mecanica</option>
+                    <option value="Ingenieria Electronica">Ingenieria Electronica</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputSemestre">Semestre</label>
+                <div class="select-with-icon">
+                  <i class="ri-calendar-check-line"></i>
+                  <select id="inputSemestre" name="semestre" required>
+                    <option value="" disabled selected>Selecciona el semestre</option>
+                    <option value="1">1° Semestre</option>
+                    <option value="2">2° Semestre</option>
+                    <option value="3">3° Semestre</option>
+                    <option value="4">4° Semestre</option>
+                    <option value="5">5° Semestre</option>
+                    <option value="6">6° Semestre</option>
+                    <option value="7">7° Semestre</option>
+                    <option value="8">8° Semestre</option>
+                    <option value="9">9° Semestre</option>
+                    <option value="10">10° Semestre</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-actions-fancy">
+            <button class="btn-cancel" id="cancelar" type="button">
+              <i class="ri-close-line"></i>
+              Cancelar
+            </button>
+            <button class="btn-save" type="submit">
+              <i class="ri-save-line"></i>
+              Guardar Estudiante
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL DETALLE ESTUDIANTE -->
+    <div class="modal-overlay" id="modalDetalle">
+      <div class="modal modal-detail">
+        <div class="modal-header">
+          <h3>Detalles del Estudiante</h3>
+          <button class="close-btn" id="closeDetalle">&times;</button>
+        </div>
+        <div id="detalleContenido">
+          <!-- El contenido se cargará dinámicamente -->
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL EDITAR ESTUDIANTE -->
+    <div class="modal-overlay" id="modalEditar">
+      <div class="modal modal-nuevo-estudiante">
+        <div class="modal-header-fancy">
+          <div class="modal-header-icon" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);">
+            <i class="ri-edit-line"></i>
+          </div>
+          <div class="modal-header-text">
+            <h3>Editar Estudiante</h3>
+            <p>Modifica los datos del estudiante</p>
+          </div>
+          <button class="close-btn-fancy" id="closeEditar">
+            <i class="ri-close-line"></i>
+          </button>
+        </div>
+        <form class="modal-form-fancy" id="formEditar">
+          <input type="hidden" id="editId" />
+          
+          <!-- Información Personal -->
+          <div class="form-section">
+            <h4 class="form-section-title">
+              <i class="ri-user-line"></i>
+              Información Personal
+            </h4>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="editNombre">Nombre</label>
+                <div class="input-with-icon">
+                  <i class="ri-user-3-line"></i>
+                  <input type="text" id="editNombre" placeholder="Nombre" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="editApellido">Apellido</label>
+                <div class="input-with-icon">
+                  <i class="ri-user-3-line"></i>
+                  <input type="text" id="editApellido" placeholder="Apellido" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="editFechaNacimiento">Fecha de Nacimiento</label>
+                <div class="input-with-icon">
+                  <i class="ri-calendar-line"></i>
+                  <input type="date" id="editFechaNacimiento" required>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Información de Contacto -->
+          <div class="form-section">
+            <h4 class="form-section-title">
+              <i class="ri-contacts-line"></i>
+              Información de Contacto
+            </h4>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="editTelefono">Teléfono</label>
+                <div class="input-with-icon">
+                  <i class="ri-phone-line"></i>
+                  <input type="tel" id="editTelefono" placeholder="Teléfono" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="editCorreo">Correo Electrónico</label>
+                <div class="input-with-icon">
+                  <i class="ri-mail-line"></i>
+                  <input type="email" id="editCorreo" placeholder="Correo electrónico" required>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Información Académica -->
+          <div class="form-section">
+            <h4 class="form-section-title">
+              <i class="ri-graduation-cap-line"></i>
+              Información Académica
+            </h4>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="editCarrera">Carrera</label>
+                <div class="select-with-icon">
+                  <i class="ri-book-open-line"></i>
+                  <select id="editCarrera" required>
+                    <option value="" disabled>Carrera</option>
+                    <option value="Ingenieria Informatica">Ingenieria Informatica</option>
+                    <option value="Ingenieria de Sistemas">Ingenieria de Sistemas</option>
+                    <option value="Ingenieria Industrial">Ingenieria Industrial</option>
+                    <option value="Ingenieria Civil">Ingenieria Civil</option>
+                    <option value="Ingenieria Mecanica">Ingenieria Mecanica</option>
+                    <option value="Ingenieria Electronica">Ingenieria Electronica</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="editSemestre">Semestre</label>
+                <div class="select-with-icon">
+                  <i class="ri-calendar-check-line"></i>
+                  <select id="editSemestre" required>
+                    <option value="" disabled>Semestre</option>
+                    <option value="1">1° Semestre</option>
+                    <option value="2">2° Semestre</option>
+                    <option value="3">3° Semestre</option>
+                    <option value="4">4° Semestre</option>
+                    <option value="5">5° Semestre</option>
+                    <option value="6">6° Semestre</option>
+                    <option value="7">7° Semestre</option>
+                    <option value="8">8° Semestre</option>
+                    <option value="9">9° Semestre</option>
+                    <option value="10">10° Semestre</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-actions-fancy">
+            <button class="btn-cancel" type="button" id="cancelarEditar">
+              <i class="ri-close-line"></i>
+              Cancelar
+            </button>
+            <button class="btn-save" type="submit">
+              <i class="ri-save-line"></i>
+              Guardar Cambios
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL AGREGAR EVALUACIÓN -->
+    <div class="modal-overlay" id="modalEvaluacion">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>Agregar Evaluación</h3>
+          <button class="close-btn" id="closeEvaluacion">&times;</button>
+        </div>
+        <form class="modal-form" id="formEvaluacion">
+          <input type="hidden" id="evalStudentId" />
+          <select id="evalMateria" required style="grid-column: span 2;">
+            <option value="" disabled selected>Seleccionar Materia</option>
+          </select>
+          <input type="text" id="evalNombre" placeholder="Nombre de la evaluación" required />
+          <input type="number" id="evalNota" placeholder="Nota (0-20)" min="0" max="20" step="0.1" required />
+          <input type="number" id="evalPorcentaje" placeholder="Porcentaje (%)" min="1" max="100" required />
+          <div class="modal-actions" style="grid-column: span 2;">
+            <button class="btn-secondary" type="button" id="cancelarEvaluacion">Cancelar</button>
+            <button class="btn-primary" type="submit">Agregar Evaluación</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- JS MODAL Y CARGA DE DATOS -->
+    <script>
+      // ---------- REFERENCIAS A ELEMENTOS ----------
+      const btn = document.getElementById("btnNuevoEstudiante");
+      const modal = document.getElementById("modalEstudiante");
+      const close = document.getElementById("closeModal");
+      const cancelar = document.getElementById("cancelar");
+      const modalDetalle = document.getElementById("modalDetalle");
+      const closeDetalle = document.getElementById("closeDetalle");
+      
+      // Modal Editar
+      const modalEditar = document.getElementById("modalEditar");
+      const closeEditar = document.getElementById("closeEditar");
+      const cancelarEditar = document.getElementById("cancelarEditar");
+      const formEditar = document.getElementById("formEditar");
+      
+      // Modal Evaluación
+      const modalEvaluacion = document.getElementById("modalEvaluacion");
+      const closeEvaluacion = document.getElementById("closeEvaluacion");
+      const cancelarEvaluacion = document.getElementById("cancelarEvaluacion");
+      const formEvaluacion = document.getElementById("formEvaluacion");
+
+      // Variable para guardar el ID del estudiante actual
+      let currentStudentId = null;
+
+      // ---------- EVENTOS DE MODALES ----------
+      btn.onclick = () => (modal.style.display = "flex");
+      close.onclick = cancelar.onclick = () => (modal.style.display = "none");
+      closeDetalle.onclick = () => (modalDetalle.style.display = "none");
+      
+      closeEditar.onclick = cancelarEditar.onclick = () => (modalEditar.style.display = "none");
+      closeEvaluacion.onclick = cancelarEvaluacion.onclick = () => (modalEvaluacion.style.display = "none");
+
+      modal.onclick = (e) => {
+        if (e.target === modal) modal.style.display = "none";
+      };
+
+      modalDetalle.onclick = (e) => {
+        if (e.target === modalDetalle) modalDetalle.style.display = "none";
+      };
+      
+      modalEditar.onclick = (e) => {
+        if (e.target === modalEditar) modalEditar.style.display = "none";
+      };
+      
+      modalEvaluacion.onclick = (e) => {
+        if (e.target === modalEvaluacion) modalEvaluacion.style.display = "none";
+      };
+
+      // ---------- CARGAR ESTUDIANTES DESDE LA BASE DE DATOS ----------
+      let allEstudiantes = []; // Store all students for filtering
+      
+      async function cargarEstudiantes() {
+        try {
+          const response = await fetch("/api/estudiantes");
+          const data = await response.json();
+
+          allEstudiantes = data.estudiantes || [];
+          renderEstudiantes(allEstudiantes);
+          updateTableCount(allEstudiantes.length);
+          populateCarreraFilter(allEstudiantes);
+        } catch (error) {
+          console.error("Error al cargar estudiantes:", error);
+          const tbody = document.getElementById("tablaEstudiantes");
+          tbody.innerHTML = "";
+          document.getElementById("emptyState").style.display = "block";
+        }
+      }
+      
+      function renderEstudiantes(estudiantes) {
+        const tbody = document.getElementById("tablaEstudiantes");
+        const emptyState = document.getElementById("emptyState");
+        tbody.innerHTML = "";
+
+        if (estudiantes && estudiantes.length > 0) {
+          emptyState.style.display = "none";
+          estudiantes.forEach((est, index) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td class="col-id">${index + 1}</td>
+              <td class="col-name">
+                <div style="display: flex; flex-direction: column;">
+                  <strong style="color: #1e293b;">${est.nombre} ${est.apellido}</strong>
+                  <small style="color: #64748b; font-size: 12px;">${est.fecha_nacimiento || 'Sin fecha'}</small>
+                </div>
+              </td>
+              <td class="col-contact">
+                <div style="display: flex; flex-direction: column;">
+                  <span style="color: #475569;">${est.correo}</span>
+                  <small style="color: #94a3b8;">${est.telefono}</small>
+                </div>
+              </td>
+              <td class="col-career">
+                <span style="background: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(79,70,229,0.1)); padding: 4px 10px; border-radius: 6px; font-size: 13px; color: #7c3aed; font-weight: 500;">
+                  ${est.carrera.replace('Ingeniería ', '').replace('Ingenieria ', '')}
+                </span>
+              </td>
+              <td class="col-semester">
+                <span style="background: #f1f5f9; padding: 4px 10px; border-radius: 6px; font-size: 13px; color: #475569; font-weight: 500;">
+                  ${est.semestre}°
+                </span>
+              </td>
+              <td class="col-actions">
+                <button class="btn-view" onclick="verDetalles(${est.id})" style="display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: linear-gradient(135deg, #7c3aed, #4f46e5); color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer;">
+                  <i class="ri-eye-line"></i>
+                  Ver
+                </button>
+              </td>
+            `;
+            tbody.appendChild(row);
+          });
+        } else {
+          emptyState.style.display = "block";
+        }
+      }
+      
+      function updateTableCount(count) {
+        const countEl = document.getElementById("tableCount");
+        if (countEl) {
+          countEl.textContent = `${count} estudiante${count !== 1 ? 's' : ''} registrado${count !== 1 ? 's' : ''}`;
+        }
+      }
+      
+      function populateCarreraFilter(estudiantes) {
+        const filterCarrera = document.getElementById("filterCarrera");
+        if (!filterCarrera) return;
+        
+        const carreras = [...new Set(estudiantes.map(e => e.carrera))];
+        carreras.forEach(carrera => {
+          const option = document.createElement("option");
+          option.value = carrera;
+          option.textContent = carrera;
+          filterCarrera.appendChild(option);
+        });
+      }
+      
+      // Search and filter functionality
+      document.addEventListener("DOMContentLoaded", () => {
+        const searchInput = document.getElementById("searchInput");
+        const filterCarrera = document.getElementById("filterCarrera");
+        const filterSemestre = document.getElementById("filterSemestre");
+        
+        function aplicarFiltros() {
+          const busqueda = (searchInput?.value || "").toLowerCase();
+          const carrera = filterCarrera?.value || "";
+          const semestre = filterSemestre?.value || "";
+          
+          const filtrados = allEstudiantes.filter(est => {
+            const matchBusqueda = !busqueda || 
+              est.nombre.toLowerCase().includes(busqueda) ||
+              est.apellido.toLowerCase().includes(busqueda) ||
+              est.correo.toLowerCase().includes(busqueda);
+            
+            const matchCarrera = !carrera || est.carrera === carrera;
+            const matchSemestre = !semestre || est.semestre.toString() === semestre;
+            
+            return matchBusqueda && matchCarrera && matchSemestre;
+          });
+          
+          renderEstudiantes(filtrados);
+          updateTableCount(filtrados.length);
+        }
+        
+        searchInput?.addEventListener("input", aplicarFiltros);
+        filterCarrera?.addEventListener("change", aplicarFiltros);
+        filterSemestre?.addEventListener("change", aplicarFiltros);
+      });
+
+      // ---------- VER DETALLES DE ESTUDIANTE ----------
+      async function verDetalles(studentId) {
+        try {
+          currentStudentId = studentId;
+          const response = await fetch(`/api/estudiantes/${studentId}/detalle`);
+          const data = await response.json();
+
+          const contenido = document.getElementById("detalleContenido");
+          
+          // Calculate overall GPA
+          let totalGPA = 0;
+          let subjectCount = 0;
+          
+          if (data.semestres && data.semestres.length > 0) {
+            data.semestres.forEach(semestre => {
+              if (semestre.materias && semestre.materias.length > 0) {
+                semestre.materias.forEach(materia => {
+                  if (materia.nota_final !== null) {
+                    totalGPA += materia.nota_final;
+                    subjectCount++;
+                  }
+                });
+              }
+            });
+          }
+          
+          const overallGPA = subjectCount > 0 ? (totalGPA / subjectCount).toFixed(2) : "N/A";
+          
+          // Botones de acción
+          let html = `
+            <div class="detail-actions">
+              <button class="btn-edit" onclick="abrirModalEditar(${studentId})">
+                <i class="ri-edit-line"></i>
+                Editar Información
+              </button>
+              <button class="btn-add-eval" onclick="abrirModalEvaluacion(${studentId})">
+                <i class="ri-add-circle-line"></i>
+                Agregar Evaluación
+              </button>
+              <button class="btn-delete" onclick="eliminarEstudiante(${studentId})">
+                <i class="ri-delete-bin-line"></i>
+                Eliminar Estudiante
+              </button>
+            </div>
+            
+            <h2 class="student-title">${data.estudiante.nombre} ${data.estudiante.apellido}</h2>
+            <p class="student-subtitle">${data.estudiante.carrera}</p>
+            
+            ${subjectCount > 0 ? `
+            <div class="overall-gpa">
+              <div class="overall-gpa-label">Promedio General</div>
+              <div class="overall-gpa-value">${overallGPA}</div>
+            </div>
+            ` : ''}
+            
+            <div class="detail-section">
+              <h4>Información Personal</h4>
+              <div class="info-grid">
+                <div class="info-item">
+                  <strong>Nombre Completo</strong>
+                  ${data.estudiante.nombre} ${data.estudiante.apellido}
+                </div>
+                <div class="info-item">
+                  <strong>Fecha de Nacimiento</strong>
+                  ${data.estudiante.fecha_nacimiento}
+                </div>
+                <div class="info-item">
+                  <strong>Teléfono</strong>
+                  ${data.estudiante.telefono}
+                </div>
+                <div class="info-item">
+                  <strong>Correo</strong>
+                  ${data.estudiante.correo}
+                </div>
+                <div class="info-item">
+                  <strong>Carrera</strong>
+                  ${data.estudiante.carrera}
+                </div>
+              </div>
+            </div>
+          `;
+
+          if (data.semestres && data.semestres.length > 0) {
+            html += '<div class="detail-section"><h4>Historial Académico</h4>';
+            
+            data.semestres.forEach(semestre => {
+              html += `
+                <div class="semester-card">
+                  <div class="semester-header">
+                    Semestre ${semestre.semestre} - ${semestre.año} (${semestre.estado})
+                  </div>
+              `;
+
+              if (semestre.materias && semestre.materias.length > 0) {
+                semestre.materias.forEach(materia => {
+                  html += `
+                    <div class="subject-card">
+                      <div class="subject-name">${materia.nombre}</div>
+                  `;
+
+                  if (materia.evaluaciones && materia.evaluaciones.length > 0) {
+                    let subjectAverage = 0;
+                    materia.evaluaciones.forEach(evaluacion => {
+                      subjectAverage += (evaluacion.nota * evaluacion.porcentaje) / 100;
+                      html += `
+                        <div class="evaluation-item">
+                          <span>${evaluacion.nombre} (${evaluacion.porcentaje}%)</span>
+                          <span><strong>${evaluacion.nota}</strong></span>
+                        </div>
+                      `;
+                    });
+                    
+                    if (materia.evaluaciones.length > 0) {
+                      html += `<div class="subject-average">Promedio: ${subjectAverage.toFixed(2)}</div>`;
+                    }
+                  }
+
+                  if (materia.nota_final !== null) {
+                    html += `<div class="final-grade">Nota Final: ${materia.nota_final}</div>`;
+                  }
+
+                  html += '</div>';
+                });
+              } else {
+                html += '<p style="color: #9ca3af; font-size: 14px;">No hay materias registradas</p>';
+              }
+
+              html += '</div>';
+            });
+
+            html += '</div>';
+          } else {
+            html += `
+              <div class="detail-section">
+                <div class="empty-state">
+                  <i class="ri-book-line" style="font-size: 48px; margin-bottom: 12px;"></i>
+                  <p>No hay registros académicos disponibles</p>
+                </div>
+              </div>
+            `;
+          }
+
+          contenido.innerHTML = html;
+          modalDetalle.style.display = "flex";
+        } catch (error) {
+          console.error("Error al cargar detalles:", error);
+          alert("Error al cargar los detalles del estudiante");
+        }
+      }
+
+      // ---------- ABRIR MODAL PARA EDITAR ESTUDIANTE ----------
+      async function abrirModalEditar(studentId) {
+        try {
+          const response = await fetch(`/api/estudiantes/${studentId}/detalle`);
+          const data = await response.json();
+          
+          document.getElementById("editId").value = studentId;
+          document.getElementById("editNombre").value = data.estudiante.nombre;
+          document.getElementById("editApellido").value = data.estudiante.apellido;
+          document.getElementById("editFechaNacimiento").value = data.estudiante.fecha_nacimiento;
+          document.getElementById("editTelefono").value = data.estudiante.telefono;
+          document.getElementById("editCorreo").value = data.estudiante.correo;
+          document.getElementById("editCarrera").value = data.estudiante.carrera;
+          
+          // Obtener el semestre actual del estudiante desde la tabla
+          const responseList = await fetch("/api/estudiantes");
+          const dataList = await responseList.json();
+          const estudiante = dataList.estudiantes.find(e => e.id === studentId);
+          if (estudiante) {
+            document.getElementById("editSemestre").value = estudiante.semestre;
+          }
+          
+          modalEditar.style.display = "flex";
+        } catch (error) {
+          console.error("Error al cargar datos para editar:", error);
+          alert("Error al cargar los datos del estudiante");
+        }
+      }
+
+      // ---------- GUARDAR CAMBIOS DEL ESTUDIANTE ----------
+      formEditar.onsubmit = async function(e) {
+        e.preventDefault();
+        
+        const studentId = document.getElementById("editId").value;
+        const datos = {
+          nombre: document.getElementById("editNombre").value,
+          apellido: document.getElementById("editApellido").value,
+          fecha_nacimiento: document.getElementById("editFechaNacimiento").value,
+          telefono: document.getElementById("editTelefono").value,
+          correo: document.getElementById("editCorreo").value,
+          carrera: document.getElementById("editCarrera").value,
+          semestre: parseInt(document.getElementById("editSemestre").value)
+        };
+        
+        try {
+          const response = await fetch(`/api/estudiantes/${studentId}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(datos)
+          });
+          
+          const result = await response.json();
+          
+          if (result.success) {
+            alert("Estudiante actualizado correctamente");
+            modalEditar.style.display = "none";
+            modalDetalle.style.display = "none";
+            cargarEstudiantes();
+            verDetalles(parseInt(studentId));
+          } else {
+            alert("Error: " + (result.error || "No se pudo actualizar"));
+          }
+        } catch (error) {
+          console.error("Error al actualizar:", error);
+          alert("Error al actualizar el estudiante");
+        }
+      };
+
+      // ---------- ABRIR MODAL PARA AGREGAR EVALUACIÓN ----------
+      async function abrirModalEvaluacion(studentId) {
+        try {
+          document.getElementById("evalStudentId").value = studentId;
+          
+          // Cargar materias del estudiante
+          const response = await fetch(`/api/estudiantes/${studentId}/materias`);
+          const data = await response.json();
+          
+          const selectMateria = document.getElementById("evalMateria");
+          selectMateria.innerHTML = '<option value="" disabled selected>Seleccionar Materia</option>';
+          
+          if (data.materias && data.materias.length > 0) {
+            data.materias.forEach(materia => {
+              const option = document.createElement("option");
+              option.value = materia.id;
+              option.textContent = `${materia.nombre} (Sem. ${materia.semestre} - ${materia.año})`;
+              selectMateria.appendChild(option);
+            });
+          } else {
+            selectMateria.innerHTML = '<option value="" disabled selected>No hay materias registradas</option>';
+          }
+          
+          // Limpiar campos
+          document.getElementById("evalNombre").value = "";
+          document.getElementById("evalNota").value = "";
+          document.getElementById("evalPorcentaje").value = "";
+          
+          modalEvaluacion.style.display = "flex";
+        } catch (error) {
+          console.error("Error al cargar materias:", error);
+          alert("Error al cargar las materias del estudiante");
+        }
+      }
+
+      // ---------- GUARDAR NUEVA EVALUACIÓN ----------
+      formEvaluacion.onsubmit = async function(e) {
+        e.preventDefault();
+        
+        const studentId = document.getElementById("evalStudentId").value;
+        const datos = {
+          subject_id: parseInt(document.getElementById("evalMateria").value),
+          nombre: document.getElementById("evalNombre").value,
+          nota: parseFloat(document.getElementById("evalNota").value),
+          porcentaje: parseInt(document.getElementById("evalPorcentaje").value)
+        };
+        
+        try {
+          const response = await fetch("/api/evaluaciones", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(datos)
+          });
+          
+          const result = await response.json();
+          
+          if (result.success) {
+            alert("Evaluación agregada correctamente");
+            modalEvaluacion.style.display = "none";
+            verDetalles(parseInt(studentId));
+          } else {
+            alert("Error: " + (result.error || "No se pudo agregar la evaluación"));
+          }
+        } catch (error) {
+          console.error("Error al agregar evaluación:", error);
+          alert("Error al agregar la evaluación");
+        }
+      };
+
+      // ---------- ELIMINAR ESTUDIANTE ----------
+      async function eliminarEstudiante(studentId) {
+        const confirmacion = confirm("¿Estás seguro de que deseas eliminar este estudiante?\n\nEsta acción eliminará TODOS sus datos:\n- Información personal\n- Semestres\n- Materias\n- Evaluaciones\n\n¡Esta acción no se puede deshacer!");
+        
+        if (!confirmacion) return;
+        
+        try {
+          const response = await fetch(`/api/estudiantes/${studentId}`, {
+            method: "DELETE"
+          });
+          
+          const result = await response.json();
+          
+          if (result.success) {
+            alert("Estudiante eliminado correctamente");
+            modalDetalle.style.display = "none";
+            cargarEstudiantes();
+          } else {
+            alert("Error: " + (result.error || "No se pudo eliminar el estudiante"));
+          }
+        } catch (error) {
+          console.error("Error al eliminar:", error);
+          alert("Error al eliminar el estudiante");
+        }
+      }
+
+      // Cargar estudiantes al cargar la página
+      window.addEventListener("DOMContentLoaded", cargarEstudiantes);
+    </script>
+
+    <!-- DARK MODE SCRIPT -->
+    <script>
+      // Aplicar modo oscuro si está guardado en localStorage
+      if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+      }
+    </script>
+
+    <!-- DROPDOWN SCRIPT -->
+    <script>
+      const btnNotificaciones = document.getElementById('btnNotificaciones');
+      const dropdownNotificaciones = document.getElementById('dropdownNotificaciones');
+      const btnUsuario = document.getElementById('btnUsuario');
+      const dropdownUsuario = document.getElementById('dropdownUsuario');
+
+      // Toggle dropdown notificaciones
+      btnNotificaciones.addEventListener('click', function(e) {
+        e.stopPropagation();
+        dropdownNotificaciones.classList.toggle('show');
+        dropdownUsuario.classList.remove('show');
+      });
+
+      // Toggle dropdown usuario
+      btnUsuario.addEventListener('click', function(e) {
+        e.stopPropagation();
+        dropdownUsuario.classList.toggle('show');
+        dropdownNotificaciones.classList.remove('show');
+      });
+
+      // Cerrar dropdowns al hacer clic fuera
+      document.addEventListener('click', function(e) {
+        if (!dropdownNotificaciones.contains(e.target) && e.target !== btnNotificaciones) {
+          dropdownNotificaciones.classList.remove('show');
+        }
+        if (!dropdownUsuario.contains(e.target) && e.target !== btnUsuario) {
+          dropdownUsuario.classList.remove('show');
+        }
+      });
+
+      // Prevenir cierre al hacer clic dentro del dropdown
+      dropdownNotificaciones.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+      dropdownUsuario.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1866 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Migración de Datos | Sistema Académico</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <style>
+      /* ===== ESTILOS ESPECÍFICOS MIGRACIÓN ===== */
+      .migration-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin-top: 24px;
+      }
+
+      .migration-card {
+        background: white;
+        border-radius: 16px;
+        padding: 28px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+
+      .migration-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .migration-card h3 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .migration-card h3 i {
+        font-size: 24px;
+        color: #4f46e5;
+      }
+
+      .migration-card p {
+        color: #6b7280;
+        font-size: 14px;
+        margin-bottom: 20px;
+        line-height: 1.6;
+      }
+
+      /* Upload Zone */
+      .upload-zone {
+        border: 2px dashed #e5e7eb;
+        border-radius: 12px;
+        padding: 40px 24px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        background: #fafafa;
+      }
+
+      .upload-zone:hover,
+      .upload-zone.dragover {
+        border-color: #4f46e5;
+        background: #f5f3ff;
+      }
+
+      .upload-zone i {
+        font-size: 48px;
+        color: #9ca3af;
+        margin-bottom: 16px;
+      }
+
+      .upload-zone:hover i {
+        color: #4f46e5;
+      }
+
+      .upload-zone h4 {
+        font-size: 16px;
+        color: #374151;
+        margin-bottom: 8px;
+      }
+
+      .upload-zone span {
+        font-size: 13px;
+        color: #9ca3af;
+      }
+
+      .upload-zone input[type="file"] {
+        display: none;
+      }
+
+      /* File Type Selector */
+      .file-type-selector {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      .file-type-btn {
+        flex: 1;
+        padding: 14px 16px;
+        border: 2px solid #e5e7eb;
+        border-radius: 10px;
+        background: white;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+      }
+
+      .file-type-btn:hover {
+        border-color: #4f46e5;
+        background: #f5f3ff;
+      }
+
+      .file-type-btn.active {
+        border-color: #4f46e5;
+        background: #4f46e5;
+        color: white;
+      }
+
+      .file-type-btn i {
+        font-size: 24px;
+      }
+
+      .file-type-btn span {
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      /* File Info */
+      .file-info {
+        display: none;
+        background: #f1f5f9;
+        border-radius: 10px;
+        padding: 16px;
+        margin-top: 16px;
+      }
+
+      .file-info.show {
+        display: block;
+      }
+
+      .file-info-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+
+      .file-details {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .file-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        background: #4f46e5;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+      }
+
+      .file-meta h5 {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 4px;
+      }
+
+      .file-meta span {
+        font-size: 12px;
+        color: #6b7280;
+      }
+
+      .btn-remove-file {
+        background: none;
+        border: none;
+        color: #dc2626;
+        cursor: pointer;
+        font-size: 18px;
+        padding: 4px;
+      }
+
+      /* Preview Section */
+      .preview-section {
+        margin-top: 20px;
+        display: none;
+      }
+
+      .preview-section.show {
+        display: block;
+      }
+
+      .preview-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+
+      .preview-header h4 {
+        font-size: 16px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .preview-header h4 i {
+        color: #4f46e5;
+      }
+
+      .preview-stats {
+        display: flex;
+        gap: 16px;
+      }
+
+      .preview-stat {
+        font-size: 13px;
+        color: #6b7280;
+      }
+
+      .preview-stat strong {
+        color: #1f2937;
+      }
+
+      .preview-table-container {
+        max-height: 300px;
+        overflow: auto;
+        border-radius: 10px;
+        border: 1px solid #e5e7eb;
+      }
+
+      .preview-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+
+      .preview-table th,
+      .preview-table td {
+        padding: 10px 14px;
+        text-align: left;
+        border-bottom: 1px solid #e5e7eb;
+        white-space: nowrap;
+      }
+
+      .preview-table th {
+        background: #f8fafc;
+        font-weight: 600;
+        color: #374151;
+        position: sticky;
+        top: 0;
+      }
+
+      .preview-table tbody tr:hover {
+        background: #f9fafb;
+      }
+
+      /* Mapping Section */
+      .mapping-section {
+        background: white;
+        border-radius: 16px;
+        padding: 28px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        margin-top: 24px;
+        display: none;
+      }
+
+      .mapping-section.show {
+        display: block;
+      }
+
+      .mapping-section h3 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .mapping-section h3 i {
+        color: #4f46e5;
+      }
+
+      .mapping-section > p {
+        color: #6b7280;
+        font-size: 14px;
+        margin-bottom: 20px;
+      }
+
+      .mapping-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+
+      .mapping-item {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .mapping-item label {
+        font-size: 14px;
+        font-weight: 500;
+        color: #374151;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .mapping-item label .required {
+        color: #dc2626;
+      }
+
+      .mapping-item select {
+        padding: 10px 14px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 14px;
+        background: white;
+        cursor: pointer;
+      }
+
+      .mapping-item select:focus {
+        outline: none;
+        border-color: #4f46e5;
+      }
+
+      /* Options Section */
+      .options-section {
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid #e5e7eb;
+      }
+
+      .options-section h4 {
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .options-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .option-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px;
+        background: #f8fafc;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .option-item:hover {
+        background: #f1f5f9;
+      }
+
+      .option-item input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: #4f46e5;
+      }
+
+      .option-item label {
+        font-size: 14px;
+        color: #374151;
+        cursor: pointer;
+      }
+
+      /* Action Buttons */
+      .migration-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid #e5e7eb;
+      }
+
+      .btn-migrate {
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        color: white;
+        border: none;
+        padding: 12px 28px;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 500;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+
+      .btn-migrate:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+      }
+
+      .btn-migrate:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .btn-cancel {
+        background: #f1f5f9;
+        color: #374151;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .btn-cancel:hover {
+        background: #e2e8f0;
+      }
+
+      /* Progress Section */
+      .progress-section {
+        background: white;
+        border-radius: 16px;
+        padding: 28px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        margin-top: 24px;
+        display: none;
+      }
+
+      .progress-section.show {
+        display: block;
+      }
+
+      .progress-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .progress-header h3 {
+        font-size: 18px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .progress-status {
+        font-size: 14px;
+        color: #6b7280;
+      }
+
+      .progress-bar-container {
+        background: #e5e7eb;
+        border-radius: 8px;
+        height: 12px;
+        overflow: hidden;
+        margin-bottom: 16px;
+      }
+
+      .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
+        border-radius: 8px;
+        transition: width 0.3s ease;
+        width: 0%;
+      }
+
+      .progress-details {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        color: #6b7280;
+      }
+
+      /* Results Section */
+      .results-section {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #e5e7eb;
+        display: none;
+      }
+
+      .results-section.show {
+        display: block;
+      }
+
+      .results-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+      }
+
+      .result-card {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 18px;
+        text-align: center;
+      }
+
+      .result-card.success {
+        background: #dcfce7;
+      }
+
+      .result-card.warning {
+        background: #fef3c7;
+      }
+
+      .result-card.error {
+        background: #fee2e2;
+      }
+
+      .result-card i {
+        font-size: 28px;
+        margin-bottom: 10px;
+      }
+
+      .result-card.success i {
+        color: #16a34a;
+      }
+
+      .result-card.warning i {
+        color: #d97706;
+      }
+
+      .result-card.error i {
+        color: #dc2626;
+      }
+
+      .result-card strong {
+        display: block;
+        font-size: 28px;
+        margin-bottom: 4px;
+      }
+
+      .result-card span {
+        font-size: 13px;
+        color: #6b7280;
+      }
+
+      /* History Section */
+      .history-card {
+        grid-column: span 2;
+      }
+
+      .history-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+
+      .history-table th,
+      .history-table td {
+        padding: 12px 14px;
+        text-align: left;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .history-table th {
+        background: #f8fafc;
+        font-weight: 600;
+        color: #374151;
+      }
+
+      .history-table tbody tr:hover {
+        background: #f9fafb;
+      }
+
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .status-badge.success {
+        background: #dcfce7;
+        color: #16a34a;
+      }
+
+      .status-badge.warning {
+        background: #fef3c7;
+        color: #d97706;
+      }
+
+      .status-badge.error {
+        background: #fee2e2;
+        color: #dc2626;
+      }
+
+      /* Loading Animation */
+      .spinner {
+        width: 20px;
+        height: 20px;
+        border: 2px solid white;
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Alert Messages */
+      .alert {
+        padding: 16px 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .alert i {
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+
+      .alert-content h5 {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      .alert-content p {
+        font-size: 13px;
+        margin: 0;
+        line-height: 1.5;
+      }
+
+      .alert.info {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+
+      .alert.success {
+        background: #dcfce7;
+        color: #166534;
+      }
+
+      .alert.warning {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
+      .alert.error {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      /* Full Width Card */
+      .full-width {
+        grid-column: span 2;
+      }
+
+      /* Dark Mode */
+      body.dark-mode .migration-card,
+      body.dark-mode .mapping-section,
+      body.dark-mode .progress-section {
+        background: #1e293b;
+      }
+
+      body.dark-mode .migration-card h3,
+      body.dark-mode .mapping-section h3 {
+        color: #f1f5f9;
+      }
+
+      body.dark-mode .migration-card p,
+      body.dark-mode .mapping-section > p {
+        color: #94a3b8;
+      }
+
+      body.dark-mode .upload-zone {
+        background: #0f172a;
+        border-color: #334155;
+      }
+
+      body.dark-mode .upload-zone:hover,
+      body.dark-mode .upload-zone.dragover {
+        border-color: #7c3aed;
+        background: rgba(79, 70, 229, 0.1);
+      }
+
+      body.dark-mode .upload-zone h4 {
+        color: #f1f5f9;
+      }
+
+      body.dark-mode .file-type-btn {
+        background: #0f172a;
+        border-color: #334155;
+        color: #f1f5f9;
+      }
+
+      body.dark-mode .file-type-btn:hover {
+        border-color: #7c3aed;
+        background: rgba(79, 70, 229, 0.1);
+      }
+
+      body.dark-mode .file-info {
+        background: #0f172a;
+      }
+
+      body.dark-mode .file-meta h5 {
+        color: #f1f5f9;
+      }
+
+      body.dark-mode .preview-table th {
+        background: #334155;
+        color: #f1f5f9;
+      }
+
+      body.dark-mode .preview-table td {
+        color: #e2e8f0;
+        border-bottom-color: #334155;
+      }
+
+      body.dark-mode .preview-table-container {
+        border-color: #334155;
+      }
+
+      body.dark-mode .mapping-item label {
+        color: #e2e8f0;
+      }
+
+      body.dark-mode .mapping-item select {
+        background: #0f172a;
+        border-color: #334155;
+        color: #f1f5f9;
+      }
+
+      body.dark-mode .option-item {
+        background: #0f172a;
+      }
+
+      body.dark-mode .option-item label {
+        color: #e2e8f0;
+      }
+
+      body.dark-mode .btn-cancel {
+        background: #334155;
+        color: #f1f5f9;
+      }
+
+      body.dark-mode .result-card {
+        background: #334155;
+      }
+
+      body.dark-mode .history-table th {
+        background: #334155;
+        color: #f1f5f9;
+      }
+
+      body.dark-mode .history-table td {
+        color: #e2e8f0;
+        border-bottom-color: #334155;
+      }
+
+      @media (max-width: 1024px) {
+        .migration-container {
+          grid-template-columns: 1fr;
+        }
+
+        .history-card,
+        .full-width {
+          grid-column: span 1;
+        }
+
+        .mapping-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .options-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .results-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- HEADER -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1>Sistema de Gestión Académica</h1>
+        <span>Migración de Base de Datos</span>
+      </div>
+
+      <div class="topbar-actions">
+        <!-- Notificaciones Dropdown -->
+        <div class="dropdown-container">
+          <button class="icon-btn" id="btnNotificaciones">
+            <i class="ri-notification-3-line"></i>
+            <span class="notification-badge">3</span>
+          </button>
+          <div class="dropdown-menu dropdown-notifications" id="dropdownNotificaciones">
+            <div class="dropdown-header">
+              <h4>Notificaciones</h4>
+              <span class="badge-count">3 nuevas</span>
+            </div>
+            <div class="dropdown-body">
+              <a href="#" class="notification-item unread">
+                <div class="notification-icon success">
+                  <i class="ri-check-line"></i>
+                </div>
+                <div class="notification-content">
+                  <p class="notification-text">Migración completada exitosamente</p>
+                  <span class="notification-time">Hace 5 minutos</span>
+                </div>
+              </a>
+              <a href="#" class="notification-item unread">
+                <div class="notification-icon warning">
+                  <i class="ri-error-warning-line"></i>
+                </div>
+                <div class="notification-content">
+                  <p class="notification-text">3 estudiantes requieren actualización de datos</p>
+                  <span class="notification-time">Hace 1 hora</span>
+                </div>
+              </a>
+              <a href="#" class="notification-item unread">
+                <div class="notification-icon info">
+                  <i class="ri-user-add-line"></i>
+                </div>
+                <div class="notification-content">
+                  <p class="notification-text">15 nuevos estudiantes registrados este semestre</p>
+                  <span class="notification-time">Hace 2 horas</span>
+                </div>
+              </a>
+            </div>
+            <div class="dropdown-footer">
+              <a href="#">Ver todas las notificaciones</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Usuario Dropdown -->
+        <div class="dropdown-container">
+          <button class="icon-btn" id="btnUsuario">
+            <i class="ri-user-3-line"></i>
+          </button>
+          <div class="dropdown-menu dropdown-user" id="dropdownUsuario">
+            <div class="user-header">
+              <div class="user-avatar">
+                <i class="ri-user-3-fill"></i>
+              </div>
+              <div class="user-info">
+                <h4>Dr. Roberto Sánchez</h4>
+                <span>profesor@universidad.edu</span>
+              </div>
+            </div>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item">
+              <i class="ri-user-line"></i>
+              Mi Perfil
+            </a>
+            <a href="configuracion.html" class="dropdown-item">
+              <i class="ri-settings-3-line"></i>
+              Configuración
+            </a>
+            <a href="#" class="dropdown-item">
+              <i class="ri-question-line"></i>
+              Ayuda
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="/logout" class="dropdown-item logout">
+              <i class="ri-logout-box-r-line"></i>
+              Cerrar Sesión
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- APP -->
+    <div class="app">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <nav>
+          <a href="index.html">
+            <i class="ri-dashboard-line"></i>
+            Panel
+          </a>
+
+          <a href="base_de_datos.html">
+            <i class="ri-group-line"></i>
+            Estudiantes
+          </a>
+
+          <a class="active">
+            <i class="ri-database-2-line"></i>
+            Migración
+          </a>
+
+          <a href="configuracion.html">
+            <i class="ri-settings-3-line"></i>
+            Configuración
+          </a>
+        </nav>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="main">
+        <div class="page-title">
+          <h2>Migración de Base de Datos</h2>
+          <p>Importa datos desde archivos Excel, TXT/CSV o FoxPro (.dbf)</p>
+        </div>
+
+        <!-- Alert Info -->
+        <div class="alert info" style="margin-top: 20px;">
+          <i class="ri-information-line"></i>
+          <div class="alert-content">
+            <h5>¿Cómo funciona la migración?</h5>
+            <p>
+              1. Selecciona el tipo de archivo → 2. Sube tu archivo → 3. Mapea las columnas → 4. Revisa la vista previa → 5. Ejecuta la migración
+            </p>
+          </div>
+        </div>
+
+        <!-- Migration Container -->
+        <div class="migration-container">
+          <!-- Upload Card -->
+          <div class="migration-card">
+            <h3>
+              <i class="ri-upload-cloud-2-line"></i>
+              Subir Archivo
+            </h3>
+            <p>Selecciona el tipo de archivo y arrastra o selecciona tu archivo para importar los datos.</p>
+
+            <!-- File Type Selector -->
+            <div class="file-type-selector">
+              <button class="file-type-btn active" data-type="excel">
+                <i class="ri-file-excel-2-line"></i>
+                <span>Excel</span>
+              </button>
+              <button class="file-type-btn" data-type="csv">
+                <i class="ri-file-text-line"></i>
+                <span>TXT/CSV</span>
+              </button>
+              <button class="file-type-btn" data-type="dbf">
+                <i class="ri-database-line"></i>
+                <span>FoxPro</span>
+              </button>
+            </div>
+
+            <!-- Upload Zone -->
+            <div class="upload-zone" id="uploadZone">
+              <input type="file" id="fileInput" accept=".xlsx,.xls,.csv,.txt,.dbf" />
+              <i class="ri-upload-cloud-line"></i>
+              <h4>Arrastra tu archivo aquí</h4>
+              <span>o haz clic para seleccionar (máx. 10MB)</span>
+            </div>
+
+            <!-- File Info -->
+            <div class="file-info" id="fileInfo">
+              <div class="file-info-header">
+                <div class="file-details">
+                  <div class="file-icon" id="fileIcon">
+                    <i class="ri-file-excel-2-line"></i>
+                  </div>
+                  <div class="file-meta">
+                    <h5 id="fileName">archivo.xlsx</h5>
+                    <span id="fileSize">2.4 MB</span>
+                  </div>
+                </div>
+                <button class="btn-remove-file" id="removeFile">
+                  <i class="ri-close-circle-line"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Format Guide Card -->
+          <div class="migration-card">
+            <h3>
+              <i class="ri-file-list-3-line"></i>
+              Formato Requerido
+            </h3>
+            <p>Tu archivo debe contener las siguientes columnas para una migración exitosa:</p>
+
+            <div style="background: #f8fafc; border-radius: 10px; padding: 16px; margin-top: 12px;">
+              <table style="width: 100%; font-size: 13px;">
+                <thead>
+                  <tr style="text-align: left;">
+                    <th style="padding: 8px; border-bottom: 1px solid #e5e7eb;">Campo</th>
+                    <th style="padding: 8px; border-bottom: 1px solid #e5e7eb;">Requerido</th>
+                    <th style="padding: 8px; border-bottom: 1px solid #e5e7eb;">Ejemplo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">Nombre</td>
+                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;"><span style="color: #dc2626;">✓ Sí</span></td>
+                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">Juan</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">Apellido</td>
+                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;"><span style="color: #dc2626;">✓ Sí</span></td>
+                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">Pérez</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">Fecha Nac.</td>
+                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;"><span style="color: #dc2626;">✓ Sí</span></td>
+                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">1999-05-15</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">Teléfono</td>
+                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;"><span style="color: #dc2626;">✓ Sí</span></td>
+                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">0412-1234567</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">Correo</td>
+                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;"><span style="color: #dc2626;">✓ Sí</span></td>
+                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">juan@email.com</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">Carrera</td>
+                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;"><span style="color: #dc2626;">✓ Sí</span></td>
+                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">Ing. Informática</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px;">Semestre</td>
+                    <td style="padding: 8px;"><span style="color: #dc2626;">✓ Sí</span></td>
+                    <td style="padding: 8px;">5</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="alert warning" style="margin-top: 16px; margin-bottom: 0;">
+              <i class="ri-error-warning-line"></i>
+              <div class="alert-content">
+                <h5>Importante</h5>
+                <p>Las fechas deben estar en formato YYYY-MM-DD o DD/MM/YYYY</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preview Section -->
+          <div class="migration-card full-width preview-section" id="previewSection">
+            <div class="preview-header">
+              <h4>
+                <i class="ri-eye-line"></i>
+                Vista Previa de Datos
+              </h4>
+              <div class="preview-stats">
+                <span class="preview-stat">Total de filas: <strong id="totalRows">0</strong></span>
+                <span class="preview-stat">Columnas detectadas: <strong id="totalCols">0</strong></span>
+              </div>
+            </div>
+            <div class="preview-table-container">
+              <table class="preview-table" id="previewTable">
+                <thead></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mapping Section -->
+        <div class="mapping-section" id="mappingSection">
+          <h3>
+            <i class="ri-git-merge-line"></i>
+            Mapeo de Columnas
+          </h3>
+          <p>Relaciona las columnas de tu archivo con los campos de la base de datos.</p>
+
+          <div class="mapping-grid" id="mappingGrid">
+            <div class="mapping-item">
+              <label>Nombre <span class="required">*</span></label>
+              <select id="mapNombre">
+                <option value="">-- Seleccionar columna --</option>
+              </select>
+            </div>
+            <div class="mapping-item">
+              <label>Apellido <span class="required">*</span></label>
+              <select id="mapApellido">
+                <option value="">-- Seleccionar columna --</option>
+              </select>
+            </div>
+            <div class="mapping-item">
+              <label>Fecha de Nacimiento <span class="required">*</span></label>
+              <select id="mapFechaNacimiento">
+                <option value="">-- Seleccionar columna --</option>
+              </select>
+            </div>
+            <div class="mapping-item">
+              <label>Teléfono <span class="required">*</span></label>
+              <select id="mapTelefono">
+                <option value="">-- Seleccionar columna --</option>
+              </select>
+            </div>
+            <div class="mapping-item">
+              <label>Correo Electrónico <span class="required">*</span></label>
+              <select id="mapCorreo">
+                <option value="">-- Seleccionar columna --</option>
+              </select>
+            </div>
+            <div class="mapping-item">
+              <label>Carrera <span class="required">*</span></label>
+              <select id="mapCarrera">
+                <option value="">-- Seleccionar columna --</option>
+              </select>
+            </div>
+            <div class="mapping-item">
+              <label>Semestre <span class="required">*</span></label>
+              <select id="mapSemestre">
+                <option value="">-- Seleccionar columna --</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Options Section -->
+          <div class="options-section">
+            <h4>
+              <i class="ri-settings-4-line"></i>
+              Opciones de Importación
+            </h4>
+            <div class="options-grid">
+              <label class="option-item">
+                <input type="checkbox" id="optSkipHeader" checked />
+                <span>Omitir primera fila (encabezados)</span>
+              </label>
+              <label class="option-item">
+                <input type="checkbox" id="optSkipDuplicates" checked />
+                <span>Omitir registros duplicados (por correo)</span>
+              </label>
+              <label class="option-item">
+                <input type="checkbox" id="optTrimSpaces" checked />
+                <span>Eliminar espacios en blanco extra</span>
+              </label>
+              <label class="option-item">
+                <input type="checkbox" id="optValidateData" checked />
+                <span>Validar formato de datos</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="migration-actions">
+            <button class="btn-cancel" id="btnCancelar">
+              Cancelar
+            </button>
+            <button class="btn-migrate" id="btnMigrar" disabled>
+              <i class="ri-play-circle-line"></i>
+              Iniciar Migración
+            </button>
+          </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-section" id="progressSection">
+          <div class="progress-header">
+            <h3>
+              <i class="ri-loader-4-line"></i>
+              Progreso de Migración
+            </h3>
+            <span class="progress-status" id="progressStatus">Procesando...</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+          <div class="progress-details">
+            <span id="progressCount">0 de 0 registros</span>
+            <span id="progressPercent">0%</span>
+          </div>
+
+          <!-- Results Section -->
+          <div class="results-section" id="resultsSection">
+            <div class="results-grid">
+              <div class="result-card success">
+                <i class="ri-checkbox-circle-line"></i>
+                <strong id="resultSuccess">0</strong>
+                <span>Importados</span>
+              </div>
+              <div class="result-card warning">
+                <i class="ri-error-warning-line"></i>
+                <strong id="resultSkipped">0</strong>
+                <span>Omitidos</span>
+              </div>
+              <div class="result-card error">
+                <i class="ri-close-circle-line"></i>
+                <strong id="resultErrors">0</strong>
+                <span>Con errores</span>
+              </div>
+              <div class="result-card">
+                <i class="ri-time-line"></i>
+                <strong id="resultTime">0s</strong>
+                <span>Tiempo total</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- History Section -->
+        <div class="migration-container" style="margin-top: 24px;">
+          <div class="migration-card history-card">
+            <h3>
+              <i class="ri-history-line"></i>
+              Historial de Migraciones
+            </h3>
+            <p>Registro de las últimas migraciones realizadas en el sistema.</p>
+
+            <div style="margin-top: 16px; overflow-x: auto;">
+              <table class="history-table">
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Archivo</th>
+                    <th>Tipo</th>
+                    <th>Registros</th>
+                    <th>Estado</th>
+                    <th>Usuario</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                  <tr>
+                    <td colspan="7" style="text-align: center; padding: 40px; color: #9ca3af;">
+                      No hay migraciones registradas aún
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- MODAL PARA VER DETALLES DE MIGRACIÓN -->
+    <div class="migration-modal-overlay" id="migrationModalOverlay">
+      <div class="migration-modal">
+        <div class="migration-modal-header">
+          <h3>
+            <i class="ri-file-list-3-line"></i>
+            Detalles de Migración
+          </h3>
+          <button class="modal-close-btn" id="closeMigrationModal">
+            <i class="ri-close-line"></i>
+          </button>
+        </div>
+        <div class="migration-modal-body">
+          <!-- Info de la migración -->
+          <div class="migration-detail-info">
+            <div class="detail-row">
+              <span class="detail-label">Fecha:</span>
+              <span class="detail-value" id="modalFecha">-</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Archivo:</span>
+              <span class="detail-value" id="modalArchivo">-</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Tipo:</span>
+              <span class="detail-value" id="modalTipo">-</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Usuario:</span>
+              <span class="detail-value" id="modalUsuario">-</span>
+            </div>
+          </div>
+
+          <!-- Resumen de resultados -->
+          <div class="migration-detail-results">
+            <div class="result-mini success">
+              <i class="ri-checkbox-circle-line"></i>
+              <div>
+                <strong id="modalExitosos">0</strong>
+                <span>Importados</span>
+              </div>
+            </div>
+            <div class="result-mini warning">
+              <i class="ri-error-warning-line"></i>
+              <div>
+                <strong id="modalOmitidos">0</strong>
+                <span>Omitidos</span>
+              </div>
+            </div>
+            <div class="result-mini error">
+              <i class="ri-close-circle-line"></i>
+              <div>
+                <strong id="modalErrores">0</strong>
+                <span>Errores</span>
+              </div>
+            </div>
+            <div class="result-mini">
+              <i class="ri-database-2-line"></i>
+              <div>
+                <strong id="modalTotal">0</strong>
+                <span>Total</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vista previa de estudiantes importados -->
+          <div class="migration-detail-preview">
+            <h4>
+              <i class="ri-group-line"></i>
+              Estudiantes Importados (Vista Previa)
+            </h4>
+            <div class="preview-table-container" style="max-height: 300px;">
+              <table class="preview-table" id="modalPreviewTable">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Correo</th>
+                    <th>Carrera</th>
+                    <th>Semestre</th>
+                  </tr>
+                </thead>
+                <tbody id="modalPreviewBody">
+                  <tr>
+                    <td colspan="5" style="text-align: center; color: #9ca3af; padding: 20px;">
+                      Cargando...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="migration-modal-footer">
+          <button class="btn-cancel" id="btnCloseModal">Cerrar</button>
+          <a href="base_de_datos.html" class="btn-migrate" style="text-decoration: none;">
+            <i class="ri-external-link-line"></i>
+            Ver todos en Base de Datos
+          </a>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- SCRIPTS -->
+    <script>
+      // ========== VARIABLES GLOBALES ==========
+      let selectedFileType = 'excel';
+      let uploadedFile = null;
+      let parsedData = [];
+      let fileColumns = [];
+
+      // ========== ELEMENTOS DOM ==========
+      const fileTypeBtns = document.querySelectorAll('.file-type-btn');
+      const uploadZone = document.getElementById('uploadZone');
+      const fileInput = document.getElementById('fileInput');
+      const fileInfo = document.getElementById('fileInfo');
+      const removeFileBtn = document.getElementById('removeFile');
+      const previewSection = document.getElementById('previewSection');
+      const mappingSection = document.getElementById('mappingSection');
+      const progressSection = document.getElementById('progressSection');
+      const resultsSection = document.getElementById('resultsSection');
+      const btnMigrar = document.getElementById('btnMigrar');
+      const btnCancelar = document.getElementById('btnCancelar');
+
+      // ========== SELECTOR DE TIPO DE ARCHIVO ==========
+      fileTypeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          fileTypeBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          selectedFileType = btn.dataset.type;
+          
+          // Actualizar tipos de archivo aceptados
+          const acceptTypes = {
+            'excel': '.xlsx,.xls',
+            'csv': '.csv,.txt',
+            'dbf': '.dbf'
+          };
+          fileInput.accept = acceptTypes[selectedFileType];
+          
+          // Limpiar archivo si cambia el tipo
+          if (uploadedFile) {
+            resetUpload();
+          }
+        });
+      });
+
+      // ========== ZONA DE SUBIDA ==========
+      uploadZone.addEventListener('click', () => fileInput.click());
+
+      uploadZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadZone.classList.add('dragover');
+      });
+
+      uploadZone.addEventListener('dragleave', () => {
+        uploadZone.classList.remove('dragover');
+      });
+
+      uploadZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadZone.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          handleFile(files[0]);
+        }
+      });
+
+      fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+          handleFile(e.target.files[0]);
+        }
+      });
+
+      removeFileBtn.addEventListener('click', resetUpload);
+
+      // ========== MANEJAR ARCHIVO ==========
+      function handleFile(file) {
+        // Validar tamaño (máx 10MB)
+        if (file.size > 10 * 1024 * 1024) {
+          alert('El archivo es demasiado grande. Máximo 10MB.');
+          return;
+        }
+
+        // Validar extensión
+        const validExtensions = {
+          'excel': ['.xlsx', '.xls'],
+          'csv': ['.csv', '.txt'],
+          'dbf': ['.dbf']
+        };
+
+        const ext = '.' + file.name.split('.').pop().toLowerCase();
+        if (!validExtensions[selectedFileType].includes(ext)) {
+          alert(`Tipo de archivo inválido. Se esperaba: ${validExtensions[selectedFileType].join(', ')}`);
+          return;
+        }
+
+        uploadedFile = file;
+        
+        // Mostrar info del archivo
+        document.getElementById('fileName').textContent = file.name;
+        document.getElementById('fileSize').textContent = formatFileSize(file.size);
+        
+        // Actualizar icono según tipo
+        const icons = {
+          'excel': 'ri-file-excel-2-line',
+          'csv': 'ri-file-text-line',
+          'dbf': 'ri-database-line'
+        };
+        document.getElementById('fileIcon').innerHTML = `<i class="${icons[selectedFileType]}"></i>`;
+        
+        fileInfo.classList.add('show');
+        uploadZone.style.display = 'none';
+
+        // Procesar archivo
+        processFile(file);
+      }
+
+      // ========== PROCESAR ARCHIVO ==========
+      async function processFile(file) {
+        try {
+          const formData = new FormData();
+          formData.append('file', file);
+          formData.append('type', selectedFileType);
+
+          const response = await fetch('/api/migracion/preview', {
+            method: 'POST',
+            body: formData
+          });
+
+          const data = await response.json();
+
+          if (data.error) {
+            alert('Error al procesar el archivo: ' + data.error);
+            resetUpload();
+            return;
+          }
+
+          parsedData = data.rows || [];
+          fileColumns = data.columns || [];
+
+          // Mostrar vista previa
+          showPreview(fileColumns, parsedData);
+          
+          // Mostrar sección de mapeo
+          populateMappingSelects(fileColumns);
+          mappingSection.classList.add('show');
+          
+          // Habilitar botón de migración
+          validateMapping();
+
+        } catch (error) {
+          console.error('Error:', error);
+          alert('Error al procesar el archivo. Por favor, intenta de nuevo.');
+          resetUpload();
+        }
+      }
+
+      // ========== MOSTRAR VISTA PREVIA ==========
+      function showPreview(columns, rows) {
+        const thead = document.querySelector('#previewTable thead');
+        const tbody = document.querySelector('#previewTable tbody');
+        
+        // Encabezados
+        thead.innerHTML = '<tr>' + columns.map(col => `<th>${col}</th>`).join('') + '</tr>';
+        
+        // Filas (mostrar máx 10)
+        const previewRows = rows.slice(0, 10);
+        tbody.innerHTML = previewRows.map(row => {
+          return '<tr>' + columns.map(col => `<td>${row[col] || ''}</td>`).join('') + '</tr>';
+        }).join('');
+
+        // Actualizar estadísticas
+        document.getElementById('totalRows').textContent = rows.length;
+        document.getElementById('totalCols').textContent = columns.length;
+
+        previewSection.classList.add('show');
+      }
+
+      // ========== POBLAR SELECTORES DE MAPEO ==========
+      function populateMappingSelects(columns) {
+        const selects = [
+          'mapNombre', 'mapApellido', 'mapFechaNacimiento', 
+          'mapTelefono', 'mapCorreo', 'mapCarrera', 'mapSemestre'
+        ];
+
+        selects.forEach(selectId => {
+          const select = document.getElementById(selectId);
+          select.innerHTML = '<option value="">-- Seleccionar columna --</option>';
+          columns.forEach(col => {
+            const option = document.createElement('option');
+            option.value = col;
+            option.textContent = col;
+            select.appendChild(option);
+          });
+
+          // Auto-mapeo inteligente
+          const fieldName = selectId.replace('map', '').toLowerCase();
+          const matchingCol = columns.find(col => 
+            col.toLowerCase().includes(fieldName) || 
+            fieldName.includes(col.toLowerCase())
+          );
+          if (matchingCol) {
+            select.value = matchingCol;
+          }
+
+          // Evento de cambio para validar
+          select.addEventListener('change', validateMapping);
+        });
+      }
+
+      // ========== VALIDAR MAPEO ==========
+      function validateMapping() {
+        const requiredFields = [
+          'mapNombre', 'mapApellido', 'mapFechaNacimiento',
+          'mapTelefono', 'mapCorreo', 'mapCarrera', 'mapSemestre'
+        ];
+
+        const allMapped = requiredFields.every(fieldId => {
+          return document.getElementById(fieldId).value !== '';
+        });
+
+        btnMigrar.disabled = !allMapped;
+      }
+
+      // ========== RESETEAR SUBIDA ==========
+      function resetUpload() {
+        uploadedFile = null;
+        parsedData = [];
+        fileColumns = [];
+        fileInput.value = '';
+        fileInfo.classList.remove('show');
+        uploadZone.style.display = 'block';
+        previewSection.classList.remove('show');
+        mappingSection.classList.remove('show');
+        mappingSection.style.display = '';  // Resetear display para próximas migraciones
+        progressSection.classList.remove('show');
+        resultsSection.classList.remove('show');
+        btnMigrar.disabled = true;
+        // Resetear barra de progreso
+        document.getElementById('progressBar').style.width = '0%';
+        document.getElementById('progressStatus').textContent = 'Procesando...';
+        document.getElementById('progressCount').textContent = '0 de 0 registros';
+        document.getElementById('progressPercent').textContent = '0%';
+      }
+
+      // ========== CANCELAR ==========
+      btnCancelar.addEventListener('click', resetUpload);
+
+      // ========== INICIAR MIGRACIÓN ==========
+      btnMigrar.addEventListener('click', async () => {
+        if (!uploadedFile || parsedData.length === 0) {
+          alert('No hay datos para migrar');
+          return;
+        }
+
+        // Obtener mapeo
+        const mapping = {
+          nombre: document.getElementById('mapNombre').value,
+          apellido: document.getElementById('mapApellido').value,
+          fecha_nacimiento: document.getElementById('mapFechaNacimiento').value,
+          telefono: document.getElementById('mapTelefono').value,
+          correo: document.getElementById('mapCorreo').value,
+          carrera: document.getElementById('mapCarrera').value,
+          semestre: document.getElementById('mapSemestre').value
+        };
+
+        // Opciones
+        const options = {
+          skipHeader: document.getElementById('optSkipHeader').checked,
+          skipDuplicates: document.getElementById('optSkipDuplicates').checked,
+          trimSpaces: document.getElementById('optTrimSpaces').checked,
+          validateData: document.getElementById('optValidateData').checked
+        };
+
+        // Mostrar progreso
+        progressSection.classList.add('show');
+        mappingSection.style.display = 'none';
+
+        const startTime = Date.now();
+
+        try {
+          const response = await fetch('/api/migracion/ejecutar', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              data: parsedData,
+              mapping: mapping,
+              options: options
+            })
+          });
+
+          const result = await response.json();
+
+          // Actualizar progreso
+          const progressBar = document.getElementById('progressBar');
+          progressBar.style.width = '100%';
+          
+          document.getElementById('progressStatus').textContent = 'Completado';
+          document.getElementById('progressCount').textContent = 
+            `${result.total || parsedData.length} registros procesados`;
+          document.getElementById('progressPercent').textContent = '100%';
+
+          // Mostrar resultados
+          const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+          document.getElementById('resultSuccess').textContent = result.success || 0;
+          document.getElementById('resultSkipped').textContent = result.skipped || 0;
+          document.getElementById('resultErrors').textContent = result.errors || 0;
+          document.getElementById('resultTime').textContent = elapsed + 's';
+
+          resultsSection.classList.add('show');
+
+          // Actualizar historial
+          loadHistory();
+
+        } catch (error) {
+          console.error('Error:', error);
+          alert('Error durante la migración: ' + error.message);
+        }
+      });
+
+      // ========== CARGAR HISTORIAL ==========
+      async function loadHistory() {
+        try {
+          const response = await fetch('/api/migracion/historial');
+          const data = await response.json();
+
+          const tbody = document.getElementById('historyTableBody');
+          
+          // Guardar historial globalmente para acceder desde el modal
+          window.migrationHistory = data.historial || [];
+
+          if (data.historial && data.historial.length > 0) {
+            tbody.innerHTML = data.historial.map((item, index) => {
+              const statusClass = item.errores > 0 ? 'error' : 
+                                  item.omitidos > 0 ? 'warning' : 'success';
+              const statusText = item.errores > 0 ? 'Con errores' : 
+                                 item.omitidos > 0 ? 'Parcial' : 'Exitoso';
+              return `
+                <tr>
+                  <td>${item.fecha}</td>
+                  <td>${item.archivo}</td>
+                  <td>${item.tipo.toUpperCase()}</td>
+                  <td>${item.registros} (${item.exitosos} ok)</td>
+                  <td>
+                    <span class="status-badge ${statusClass}">
+                      <i class="ri-checkbox-circle-line"></i>
+                      ${statusText}
+                    </span>
+                  </td>
+                  <td>${item.usuario}</td>
+                  <td>
+                    <button class="btn-view" onclick="showMigrationDetails(${index})">
+                      <i class="ri-eye-line"></i>
+                      Ver
+                    </button>
+                  </td>
+                </tr>
+              `;
+            }).join('');
+          }
+        } catch (error) {
+          console.error('Error al cargar historial:', error);
+        }
+      }
+
+      // ========== MOSTRAR DETALLES DE MIGRACIÓN ==========
+      async function showMigrationDetails(index) {
+        const item = window.migrationHistory[index];
+        if (!item) return;
+
+        // Llenar modal con datos
+        document.getElementById('modalFecha').textContent = item.fecha;
+        document.getElementById('modalArchivo').textContent = item.archivo;
+        document.getElementById('modalTipo').textContent = item.tipo.toUpperCase();
+        document.getElementById('modalUsuario').textContent = item.usuario;
+        document.getElementById('modalExitosos').textContent = item.exitosos;
+        document.getElementById('modalOmitidos').textContent = item.omitidos;
+        document.getElementById('modalErrores').textContent = item.errores;
+        document.getElementById('modalTotal').textContent = item.registros;
+
+        // Cargar vista previa de estudiantes recientes
+        const previewBody = document.getElementById('modalPreviewBody');
+        previewBody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #9ca3af; padding: 20px;">Cargando...</td></tr>';
+
+        try {
+          const response = await fetch(`/api/estudiantes?limit=${item.exitosos}&recent=true`);
+          const data = await response.json();
+          
+          if (data.estudiantes && data.estudiantes.length > 0) {
+            const studentsToShow = data.estudiantes.slice(0, 10);
+            previewBody.innerHTML = studentsToShow.map(est => `
+              <tr>
+                <td>${est.nombre}</td>
+                <td>${est.apellido}</td>
+                <td>${est.correo}</td>
+                <td>${est.carrera}</td>
+                <td>${est.semestre}</td>
+              </tr>
+            `).join('');
+            
+            if (data.estudiantes.length > 10) {
+              previewBody.innerHTML += `
+                <tr>
+                  <td colspan="5" style="text-align: center; color: #6b7280; padding: 12px; font-style: italic;">
+                    ... y ${data.estudiantes.length - 10} más
+                  </td>
+                </tr>
+              `;
+            }
+          } else {
+            previewBody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #9ca3af; padding: 20px;">No hay estudiantes para mostrar</td></tr>';
+          }
+        } catch (error) {
+          console.error('Error al cargar estudiantes:', error);
+          previewBody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #9ca3af; padding: 20px;">Error al cargar estudiantes</td></tr>';
+        }
+
+        // Mostrar modal
+        document.getElementById('migrationModalOverlay').classList.add('show');
+      }
+
+      // ========== CERRAR MODAL ==========
+      document.getElementById('closeMigrationModal').addEventListener('click', closeMigrationModal);
+      document.getElementById('btnCloseModal').addEventListener('click', closeMigrationModal);
+      document.getElementById('migrationModalOverlay').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('migrationModalOverlay')) {
+          closeMigrationModal();
+        }
+      });
+
+      function closeMigrationModal() {
+        document.getElementById('migrationModalOverlay').classList.remove('show');
+      }
+
+      // ========== UTILIDADES ==========
+      function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+      }
+
+      // ========== INICIALIZACIÓN ==========
+      document.addEventListener('DOMContentLoaded', () => {
+        loadHistory();
+      });
+    </script>
+
+    <!-- DARK MODE SCRIPT -->
+    <script>
+      if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+      }
+    </script>
+
+    <!-- DROPDOWN SCRIPT -->
+    <script>
+      const btnNotificaciones = document.getElementById('btnNotificaciones');
+      const dropdownNotificaciones = document.getElementById('dropdownNotificaciones');
+      const btnUsuario = document.getElementById('btnUsuario');
+      const dropdownUsuario = document.getElementById('dropdownUsuario');
+
+      btnNotificaciones.addEventListener('click', function(e) {
+        e.stopPropagation();
+        dropdownNotificaciones.classList.toggle('show');
+        dropdownUsuario.classList.remove('show');
+      });
+
+      btnUsuario.addEventListener('click', function(e) {
+        e.stopPropagation();
+        dropdownUsuario.classList.toggle('show');
+        dropdownNotificaciones.classList.remove('show');
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!dropdownNotificaciones.contains(e.target) && e.target !== btnNotificaciones) {
+          dropdownNotificaciones.classList.remove('show');
+        }
+        if (!dropdownUsuario.contains(e.target) && e.target !== btnUsuario) {
+          dropdownUsuario.classList.remove('show');
+        }
+      });
+
+      dropdownNotificaciones.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+      dropdownUsuario.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+    </script>
+  </body>
+</html>
+
