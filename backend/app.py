@@ -2,6 +2,7 @@ from flask import Flask, request, redirect, render_template, session
 from werkzeug.security import check_password_hash
 import sqlite3
 import os
+import sys
 import unicodedata
 
 # Función para normalizar texto removiendo tildes/acentos
@@ -14,8 +15,15 @@ def normalizar_texto(texto):
     return ''.join(c for c in normalized if unicodedata.category(c) != 'Mn')
 
 # Rutas base
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-FRONTEND_DIR = os.path.join(BASE_DIR, "../frontend")
+# Si está congelado (ejecutable), sys.executable es la ruta base para archivos mutables (DBs)
+# sys._MEIPASS es la ruta para archivos estáticos empaquetados
+if getattr(sys, 'frozen', False):
+    BASE_DIR = os.path.dirname(sys.executable)
+    FRONTEND_DIR = os.path.join(sys._MEIPASS, "frontend")
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    FRONTEND_DIR = os.path.join(BASE_DIR, "../frontend")
+
 DB_NAME = os.path.join(BASE_DIR, "database.db")
 STUDENTS_DB = os.path.join(BASE_DIR, "base_datos_estudiantes.db")
 
